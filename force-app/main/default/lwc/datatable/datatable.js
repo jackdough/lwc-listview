@@ -29,7 +29,6 @@ export default class Datatable extends LightningElement {
   _recordsPerBatch;
   _recordCount;
   _tableRequest = '';
-  _columnsToHide = {};
   objectInfo;
   @track _sortedDirection='asc';
   @track _sortedBy;
@@ -47,22 +46,10 @@ export default class Datatable extends LightningElement {
   @api maxRecords=2000;
   @api recordsPerBatch=50;
 
-  get columns(){
-    const toReturn = [];
-    for (let i = 0; i < this._columns.length; i++) {
-        let col = this._columns[i];
-        if (this._columnsToHide.hasOwnProperty(col.fieldName)) continue;
-        else toReturn.push(col);
-    }
-    return toReturn;
-    // return this._columns;
-  }
 
   set columns(value) {
     this._columns = value;
   }
-
-  SETUP = true;
 
   get sortedByFormatted() {
     let name = this._sortedBy
@@ -139,34 +126,8 @@ export default class Datatable extends LightningElement {
     return this._fields;
   }
 
-  // used to check if specific values of fields changed e.g. a field visibility was set/unset
-  hasChanges(oldValues, newValues, valuesToCheck) {
-      const oldValuesByApiName = {};
-
-      for (let i = 0; i < oldValues.length; i++) {
-          oldValuesByApiName[oldValues[i].apiName] = oldValues[i];
-      }
-
-      for (let i = 0; i < newValues.length; i++) {
-          let newValue = newValues[i];
-          let oldValue = oldValuesByApiName[newValue.apiName];
-
-          for (let index = 0; index < valuesToCheck.length; index++) {
-            if (oldValue && newValue) {
-              if (newValue[valuesToCheck[index]] !== oldValue[valuesToCheck[index]]) return true;
-            }
-          }
-      }
-      return false;
-  }
 
   set fields(value) {
-    this._columnsToHide = {};
-    let hasChanges = false;
-    if (!this.SETUP) {
-      this._tableRequest = this.tableRequest;
-      hasChanges = this.hasChanges(this._fields, value, ['visible']);
-    }
 
     if (value && typeof value == 'string') value = JSON.parse(value);
     else value = JSON.parse(JSON.stringify(value)); // Deep copy the object because LWC does not allow modifying API attributes THIS WILL NOT WORK IF THERE ARE ANY METHODS ON THE OBJECT
@@ -176,7 +137,6 @@ export default class Datatable extends LightningElement {
         if (typeof field.visible === 'undefined') field.visible = true; // default true
         else field.visible = !!field.visible; // convert to boolean
         field.sortable = !!field.sortable; // convert to boolean (default false)
-        if (!field.visible) this._columnsToHide[field.apiName] = 1;
       });
     } else {
       this.error('`fields` is required');
@@ -185,7 +145,6 @@ export default class Datatable extends LightningElement {
     // this._fields = value;
     this.tableRequest = value; // this may not actually be necessary. we might be able to just assign this._fields directly
 
-    if (hasChanges) this.refresh();
   }
 
   /**
@@ -228,22 +187,6 @@ export default class Datatable extends LightningElement {
     }
   }
 
-  setUpColumns(columns){
-    columns = this.addFieldMetadata(columns);
-    if (this.SETUP) {
-      this.SETUP = false;
-      // for the first time we are showing the datatable, we should have the Full Name / Id
-      for (let index = 0; index < columns.length; index++) {
-        const col = columns[index];
-        if (col.fieldName === 'Id') {
-            columns.unshift(columns.splice(index, 1)[0]);
-            break;
-        }
-      }
-    }
-    return columns;
-  }
-
   @wire(wireTableCache, { tableRequest: '$tableRequest' })
   wiredCache(result) {
     this.wiredResults = result;
@@ -252,7 +195,7 @@ export default class Datatable extends LightningElement {
     if (data) {
       this.data = tableUtils.applyLinks(tableUtils.flattenQueryResult(data.tableData));
       this._offset = this.data.length;
-      this.columns = this.setUpColumns(data.tableColumns);
+      this.columns = this.addFieldMetadata(data.tableColumns);
       if (this.datatable) this.datatable.selectedRows = this._selectedRows;
       this._enableInfiniteLoading = this.enableInfiniteLoading;
       this._isLoading = false;
@@ -309,11 +252,7 @@ export default class Datatable extends LightningElement {
     // this._tableRequest = this.tableRequest;
     if (!Array.isArray(value)) this._fields = [...this._fields]; // hack to force wire to reload
     else this._fields = value;
-    if (this.SETUP) {
-        this._isLoading = true;
-    } else {
-      this._isLoading = (this.tableRequest !== this._tableRequest);
-    }
+    this._isLoading = true;
   }
 
   @api
@@ -382,10 +321,10 @@ export default class Datatable extends LightningElement {
     throw (err);
   }
 
-  getRowActions(row, renderActions) {
-    const actions = this.rowActions.filterRowActions(row, this.rowActions.availableActions);
-    renderActions(actions);
-  }
+  // getRowActions(row, renderActions) {
+  //   const actions = this.rowActions.filterRowActions(row, this.rowActions.availableActions);
+  //   renderActions(actions);
+  // }
 
   addFieldMetadata(columns) {
     columns = JSON.parse(JSON.stringify(columns))
@@ -398,14 +337,16 @@ export default class Datatable extends LightningElement {
         let field = this.fields.find(f => (f.fieldName === fieldName));
         if (field) { // copy values from fields list to columns list
           col.sortable = field.sortable;
+          col.visible = field.visible;
         }
         return col;
-      });
-    if (this.rowActions.availableActions && this.rowActions.availableActions.length || typeof this.rowActions.availableActions === 'function') {
+      })
+      .filter(col => col.visible);
+    if (this.rowActions && this.rowActions.length || typeof this.rowActions === 'function') {
       columns.push({
         type: 'action',
         typeAttributes: {
-          rowActions: this.getRowActions.bind(this)
+          rowActions: this.rowActions
         }
       });
     }

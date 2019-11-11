@@ -7,7 +7,8 @@ Takes as input an sObject and an array of fields and populates a datatable with 
     {
         fieldName,
         searchable (defaults to true on text fields),
-        sortable (defaults to true),
+        sortable (defaults to false),
+        visible (defaults to true)
     }
 
 ### Row Actions:

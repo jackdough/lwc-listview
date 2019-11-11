@@ -455,17 +455,26 @@ describe('c-datatable', () => {
         ];
 
         document.body.appendChild(element);
+        wireTableCacheWireAdapter.emit(mockTableData);
 
         return Promise.resolve().then(() => {
+            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
             const request = JSON.parse(wireTableCacheWireAdapter.getLastConfig().tableRequest);
-            expect(request.queryString).not.toMatch('Account.Name');
+            expect(request.queryString).toMatch('Account.Name');
+            expect(lightningDatatable.columns).not.toEqual(expect.arrayContaining([
+                expect.objectContaining({'fieldName': 'Account_Id'})
+            ]));
             element.fields = [ 
                 { fieldName: 'Name', sortable: true },
                 { fieldName: 'Account.Name', sortable: true }
             ];
-
+            wireTableCacheWireAdapter.emit(mockTableData);
         }).then(() => {
+            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
             const request = JSON.parse(wireTableCacheWireAdapter.getLastConfig().tableRequest);
+            expect(lightningDatatable.columns).toEqual(expect.arrayContaining([
+                expect.objectContaining({'fieldName': 'Account_Id'})
+            ]));
             expect(request.queryString).toMatch('Account.Name');
         });
     });
