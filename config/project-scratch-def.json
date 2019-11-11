@@ -1,0 +1,16 @@
+{
+  "orgName": "Test",
+  "edition": "Developer",
+  "hasSampleData": true,
+  "features": [
+    "ForceComPlatform",
+    "ProcessBuilder"
+  ],
+  "settings": {
+      "orgPreferenceSettings" : {
+          "s1DesktopEnabled" : true,
+          "enhancedEmailEnabled": true,
+          "s1EncryptedStoragePref2": false
+      }
+  }
+}

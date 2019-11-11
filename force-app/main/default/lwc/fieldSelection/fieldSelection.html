@@ -1,0 +1,40 @@
+<template>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                    <lightning-icon icon-name="utility:close" size="medium">
+                    </lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Select Fields to Display</h2>
+            </header>
+            <div if:true={_showWarning} class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+                        </svg>
+                    </span>
+                    <h2> Please select at least one field </h2>
+            </div>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <lightning-dual-listbox
+                    onchange={handleChange} 
+                    name="Fields"
+                    label="Select Fields"
+                    source-label="Available"
+                    selected-label="Selected"
+                    field-level-help="select fields to display"
+                    options={nonselectedfields}
+                    value={selectedfields}>
+                </lightning-dual-listbox>
+            </div>
+            <footer class="slds-modal__footer">
+                <lightning-button label="Close" variant="neutral" onclick={closeModal}></lightning-button>&nbsp;&nbsp;&nbsp;&nbsp;
+                <lightning-button label="Save" variant="brand" onclick={dispatchFieldsToParent}></lightning-button>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

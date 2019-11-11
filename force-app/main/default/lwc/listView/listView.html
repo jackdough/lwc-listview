@@ -1,0 +1,39 @@
+<template>
+    <template if:true={loading}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={_doneLoading}>
+        <div>
+            <div>
+                <c-list-view-header
+                    number-of-records={_numberOfRecords}
+                    filtered-fields={_filterBy}
+                    order-by={orderBy}
+                    object-name={sObject}
+                    available-fields={_fields}
+                    mass-actions={massActions}
+                    onlistviewheaderevent={handleChildrenEvents}
+                    selected-rows-count={_selectedRowsCount}>
+                </c-list-view-header>
+            </div>
+        </div>  
+            <div class={showFilters}>
+                <div class="slds-col table-wrapper"> 
+                    <c-datatable    
+                        s-object={sObject}
+                        fields={dataTableFields}
+                        row-actions={rowActions}
+                        onloaddata={handleLoadData}
+                        onrowselection={handleRowSelection}
+                        sorted-by={orderBy}
+                        sorted-direction={sortDirection}>
+                    </c-datatable>
+                </div>
+                <div class="slds-panel slds-size_large slds-panel_docked slds-panel_docked-right" aria-hidden="false">
+                        HELLO THERE
+                </div>
+            </div>
+    </template>
+</template>

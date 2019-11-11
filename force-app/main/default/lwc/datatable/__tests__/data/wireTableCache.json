@@ -1,0 +1,56 @@
+{
+    "recordCount": 5,
+    "tableData": [
+        {
+            "Id": "0031F00000JKhtRQAT",
+            "Name": "Jane Grey",
+            "AccountId": "0011F00000RcaIVQAZ",
+            "Account": {
+                "Name": "University of Arizona",
+                "Id": "0011F00000RcaIVQAZ"
+            }
+        },
+        {
+            "Id": "0031F00000JKhtTQAT",
+            "Name": "Ashley James",
+            "AccountId": "0011F00000RcaIWQAZ",
+            "Account": {
+                "Name": "United Oil & Gas, UK",
+                "Id": "0011F00000RcaIWQAZ"
+            }
+        },
+        {
+            "Id": "0031F00000JKhtVQAT",
+            "Name": "Liz D'Cruz",
+            "AccountId": "0011F00000RcaIXQAZ",
+            "Account": {
+                "Name": "United Oil & Gas, Singapore",
+                "Id": "0011F00000RcaIXQAZ"
+            }
+        }
+    ],
+    "tableColumns": [
+        {
+            "label": "Full Name",
+            "type": "url",
+            "fieldName": "Id",
+            "typeAttributes": {
+                "label": {
+                    "fieldName": "Name"
+                },
+                "target": "_parent"
+            }
+        },
+        {
+            "label": "Account Name",
+            "type": "url",
+            "fieldName": "Account_Id",
+            "typeAttributes": {
+                "label": {
+                    "fieldName": "Account_Name"
+                },
+                "target": "_parent"
+            }
+        }
+    ]
+}

@@ -1,0 +1,47 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "c/contactListView": [
+                "../../default/lwc/contactListView/contactListView.js"
+            ],
+            "c/datatable": [
+                "../../default/lwc/datatable/datatable.js"
+            ],
+            "c/fieldSelection": [
+                "../../default/lwc/fieldSelection/fieldSelection.js"
+            ],
+            "c/listView": [
+                "../../default/lwc/listView/listView.js"
+            ],
+            "c/listViewHeader": [
+                "../../default/lwc/listViewHeader/listViewHeader.js"
+            ],
+            "c/massActions": [
+                "../../default/lwc/massActions/massActions.js"
+            ],
+            "c/datatableImperativeExample": [
+                "datatableImperativeExample/datatableImperativeExample.js"
+            ],
+            "c/lwcUtilsLicense": [
+                "lwcUtilsLicense/lwcUtilsLicense.js"
+            ],
+            "c/tableService": [
+                "tableService/tableService.js"
+            ],
+            "c/tableServiceUtils": [
+                "tableServiceUtils/tableServiceUtils.js"
+            ]
+        },
+        "experimentalDecorators": true
+    },
+    "include": [
+        "**/*",
+        "../../../../.sfdx/typings/lwc/**/*.d.ts"
+    ],
+    "typeAcquisition": {
+        "include": [
+            "jest"
+        ]
+    }
+}

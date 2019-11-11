@@ -1,0 +1,22 @@
+<template>
+  <div if:true={data} class="slds-is-relative" style="height: 100%">
+    <lightning-datatable
+      hide-checkbox-column={hideCheckboxColumn}
+      data={data}
+      columns={columns}
+      key-field="Id"
+      sorted-by={sortedByFormatted}
+      sorted-direction={_sortedDirection}
+      onsort={updateSortField}
+      selected-rows={_selectedRows}
+      onrowselection={handleRowSelection}
+      enable-infinite-loading={_enableInfiniteLoading}
+      onloadmore={loadMoreData}
+      onrowaction={handleRowAction}
+      >
+    </lightning-datatable>
+    <div if:true={isLoading}>
+      <lightning-spinner size="large" variant="brand" alternative-text="Loading data..."></lightning-spinner>
+    </div>
+  </div>
+</template>
