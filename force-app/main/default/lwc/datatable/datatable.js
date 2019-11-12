@@ -320,7 +320,7 @@ export default class Datatable extends LightningElement {
   get where() {
     let filter = this.filter;
     if (filter) {
-      filter += this.parentRelationship;
+      filter += ' AND ' + this.parentRelationship;
     } else {
       filter = this.parentRelationship;
     }
