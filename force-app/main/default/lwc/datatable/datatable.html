@@ -1,4 +1,5 @@
 <template>
+  <template if:true={showSoql}>{query}</template>
   <div if:true={data} class="slds-is-relative" style="height: 100%">
     <lightning-datatable
       hide-checkbox-column={hideCheckboxColumn}

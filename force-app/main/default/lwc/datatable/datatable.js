@@ -42,6 +42,8 @@ export default class Datatable extends LightningElement {
     { fieldName: 'Name', sortable: true, sorted: true, searchable: true, visible: true, sortDirection: 'asc' },
     { fieldName: 'Account.Name', searchable: true, sortable: true}
   ];*/
+  @api showSoql;
+
 
   @api maxRecords=2000;
   @api recordsPerBatch=50;
