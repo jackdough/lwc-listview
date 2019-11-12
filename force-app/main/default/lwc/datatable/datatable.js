@@ -147,7 +147,8 @@ export default class Datatable extends LightningElement {
         if (!field.fieldName) this.error('Field must have a valid `fieldName` property');
         if (typeof field.visible === 'undefined') field.visible = true; // default true
         else field.visible = !!field.visible; // convert to boolean
-        field.sortable = !!field.sortable; // convert to boolean (default false)
+        if (typeof field.sortable === 'undefined') field.sortable = true; // default true
+        else field.sortable = !!field.sortable; // convert to boolean
       });
     } else {
       this.error('`fields` is required');
