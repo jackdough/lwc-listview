@@ -24,7 +24,7 @@ Contains a label and a callback that does something with the selected row. The c
 Name | Type |Read only | Required | Description | Default value
 ---|---|---|---|---|---
 `s-object`|string||✔| name of Salesforce object
-`fields`|array||✔|fields to display
+`fields`|array||✔|fields to display. Optionally a comma separated list of fields
 `sorted-by`|string||✔|field to sort table by
 `sorted-direction`|string|||`asc` or `desc`|`asc`
 `filter`|string|||string to filter by - excluding the where clause. e.g. `Name='Bob' AND Total_Donations__c > 1000`
