@@ -2,6 +2,7 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
@@ -20,6 +21,7 @@ export default class Datatable extends LightningElement {
    ***/
   // _wiredResults;
   wiredResults;
+  parentRecord;
   _sObject;
   _filter;
   _search;
@@ -29,6 +31,8 @@ export default class Datatable extends LightningElement {
   _recordsPerBatch;
   _recordCount;
   _tableRequest = '';
+  _parentRecordField;
+  _childRecordField;
   objectInfo;
   @track _sortedDirection='asc';
   @track _sortedBy;
@@ -42,8 +46,13 @@ export default class Datatable extends LightningElement {
     { fieldName: 'Name', sortable: true, sorted: true, searchable: true, visible: true, sortDirection: 'asc' },
     { fieldName: 'Account.Name', searchable: true, sortable: true}
   ];*/
+  @api recordId;
+  @api objectApiName;
   @api showSoql;
 
+  @api parentRecordField;
+
+  @api childRecordField;
 
   @api maxRecords=2000;
   @api recordsPerBatch=50;
@@ -192,6 +201,12 @@ export default class Datatable extends LightningElement {
     this._selectedRows = [];
   }
 
+  @wire(getRecord, {recordId: '$recordId', fields: '$fullParentRecordField'})
+  wiredGetParentRecord(data) {
+    this.parentRecord = data;
+    this.tableRequest = 'reset';
+  }
+
   @wire(getObjectInfo, { objectApiName: '$sObject' })
   wiredObjectInfo({ error, data }) {
     if (data) {
@@ -271,7 +286,7 @@ export default class Datatable extends LightningElement {
 
   @api
   get query() {
-    let soql = 'SELECT ' + (this.fields.some(field => field.fieldName === 'Id' && field.visible) ? '' : 'Id,') + // include Id in query if is not defined
+    let soql = 'SELECT ' + (this.fields.some(field => field.fieldName === 'Id') ? '' : 'Id,') + // include Id in query if is not defined
       this.fields
         // .filter(field => field.visible) // exclude fields set to not be visible
         // .filter(field => field.fieldName.includes('.') || !this.objectInfo && this.objectInfo.fields[field.fieldName]) // exclude fields that are not existent (does not check related fields)
@@ -282,8 +297,30 @@ export default class Datatable extends LightningElement {
     return soql;
   }
 
+  get fullParentRecordField() {
+    return this.objectApiName + '.' + this.parentRecordField;
+  }
+
+  get parentRecordId() {
+    if (this.parentRecordField && this.parentRecord && this.parentRecord.data)
+      return getFieldValue(this.parentRecord.data, this.fullParentRecordField);
+    return '';
+  }
+
+  get parentRelationship() {
+    if (this.parentRecordId && this.childRecordField) {
+      return " " + this.childRecordField + " = '" + this.parentRecordId + "'";
+    }
+    return "";
+  }
+
   get where() {
     let filter = this.filter;
+    if (filter) {
+      filter += this.parentRelationship;
+    } else {
+      filter = this.parentRelationship;
+    }
     let search;
     if (this.search) {
       let searchTerm = this.search.replace("'", "\\'");
