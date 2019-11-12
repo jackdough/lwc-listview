@@ -13,7 +13,7 @@
         "test:unit:debug": "lwc-jest --debug"
     },
     "author": "JackDough",
-    "license": "Copyright",
+    "license": "BSD-3-Clause",
     "private": true,
     "devDependencies": {
         "@salesforce/eslint-config-lwc": "^0.3.0",
