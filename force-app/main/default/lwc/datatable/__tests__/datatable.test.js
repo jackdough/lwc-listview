@@ -4,6 +4,7 @@ import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
 import { registerLdsTestWireAdapter } from '@salesforce/wire-service-jest-util';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getRecord } from 'lightning/uiRecordApi';
 
 
 const mockTableData = require('./data/wireTableCache.json');
@@ -23,6 +24,7 @@ jest.mock(
 describe('c-datatable', () => {
     const wireTableCacheWireAdapter = registerLdsTestWireAdapter(wireTableCache);
     const getObjectInfoAdapter = registerLdsTestWireAdapter(getObjectInfo);
+    const getRecordAdapter = registerLdsTestWireAdapter(getRecord);
     const defaultDatatable = () => {
         const element = createElement('c-datatable', {
             is: Datatable
