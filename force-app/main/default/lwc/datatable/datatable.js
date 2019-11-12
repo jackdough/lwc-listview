@@ -308,8 +308,11 @@ export default class Datatable extends LightningElement {
   }
 
   get parentRelationship() {
-    if (this.parentRecordId && this.childRecordField) {
-      return " " + this.childRecordField + " = '" + this.parentRecordId + "'";
+    if (this.parentRecordField && this.childRecordField) {
+      if (this.parentRecordId) {
+        return " " + this.childRecordField + " = '" + this.parentRecordId + "'";
+      }
+      return "''";// return empty string so the query returns no results
     }
     return "";
   }
