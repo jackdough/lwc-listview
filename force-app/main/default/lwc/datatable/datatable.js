@@ -129,7 +129,18 @@ export default class Datatable extends LightningElement {
 
   set fields(value) {
 
-    if (value && typeof value == 'string') value = JSON.parse(value);
+    if (value && typeof value == 'string') {
+      if (value.substring(0,1)==='[')  {
+        value = JSON.parse(value);
+      } else {
+        value = value.split(',')
+          .map(field => {
+            return {
+              fieldName: field
+            };
+          });
+      }
+    }  
     else value = JSON.parse(JSON.stringify(value)); // Deep copy the object because LWC does not allow modifying API attributes THIS WILL NOT WORK IF THERE ARE ANY METHODS ON THE OBJECT
     if (Array.isArray(value)) {
       value.forEach(field => {
