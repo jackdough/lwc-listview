@@ -2,7 +2,7 @@ import { createElement } from 'lwc';
 import Datatable from 'c/datatable';
 import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
-import { registerLdsTestWireAdapter } from '@salesforce/wire-service-jest-util';
+import { registerLdsTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { getRecord } from 'lightning/uiRecordApi';
 
