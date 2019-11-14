@@ -312,7 +312,7 @@ export default class Datatable extends LightningElement {
       if (this.parentRecordId) {
         return " " + this.childRecordField + " = '" + this.parentRecordId + "'";
       }
-      return "''";// return empty string so the query returns no results
+      return " " + this.childRecordField + " = ''";// return empty string so the query returns no results
     }
     return "";
   }
