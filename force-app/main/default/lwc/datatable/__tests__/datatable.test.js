@@ -2,8 +2,9 @@ import { createElement } from 'lwc';
 import Datatable from 'c/datatable';
 import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
-import { registerLdsTestWireAdapter } from '@salesforce/wire-service-jest-util';
+import { registerLdsTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getRecord } from 'lightning/uiRecordApi';
 
 
 const mockTableData = require('./data/wireTableCache.json');
@@ -23,6 +24,7 @@ jest.mock(
 describe('c-datatable', () => {
     const wireTableCacheWireAdapter = registerLdsTestWireAdapter(wireTableCache);
     const getObjectInfoAdapter = registerLdsTestWireAdapter(getObjectInfo);
+    const getRecordAdapter = registerLdsTestWireAdapter(getRecord);
     const defaultDatatable = () => {
         const element = createElement('c-datatable', {
             is: Datatable
@@ -455,17 +457,26 @@ describe('c-datatable', () => {
         ];
 
         document.body.appendChild(element);
+        wireTableCacheWireAdapter.emit(mockTableData);
 
         return Promise.resolve().then(() => {
+            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
             const request = JSON.parse(wireTableCacheWireAdapter.getLastConfig().tableRequest);
-            expect(request.queryString).not.toMatch('Account.Name');
+            expect(request.queryString).toMatch('Account.Name');
+            expect(lightningDatatable.columns).not.toEqual(expect.arrayContaining([
+                expect.objectContaining({'fieldName': 'Account_Id'})
+            ]));
             element.fields = [ 
                 { fieldName: 'Name', sortable: true },
                 { fieldName: 'Account.Name', sortable: true }
             ];
-
+            wireTableCacheWireAdapter.emit(mockTableData);
         }).then(() => {
+            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
             const request = JSON.parse(wireTableCacheWireAdapter.getLastConfig().tableRequest);
+            expect(lightningDatatable.columns).toEqual(expect.arrayContaining([
+                expect.objectContaining({'fieldName': 'Account_Id'})
+            ]));
             expect(request.queryString).toMatch('Account.Name');
         });
     });
