@@ -4,9 +4,16 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 
 
 export default class RelatedList extends LightningElement {
+  _title;
+  @api
+  get title() {
+    return this._title || (this.objectInfo && this.objectInfo.labelPlural) || this.sObject;
+  }
+  set title(value) {
+    this._title = value;
+  }
   @api recordId;
   @api objectApiName
-
   @api sObject;
   @api fields;
   @api sortedBy;
@@ -32,7 +39,7 @@ export default class RelatedList extends LightningElement {
 
   _parentRecordField;
   _childRecordField;
-  objectInfo;
+  @track objectInfo;
 
   @wire(getObjectInfo, { objectApiName: '$sObject' })
   wiredObjectInfo({ error, data }) {

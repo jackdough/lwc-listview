@@ -1,16 +1,32 @@
 <template>
-    <c-datatable
-        s-object={sObject}
-        fields={fields}
-        sorted-by={sortedBy}
-        sorted-direction={sortedDirection}
-        filter={filter}
-        hide-checkbox-column={hideCheckboxColumn}
-        enable-infinite-loading={enableInfiniteLoading}
-        records-per-batch={recordsPerBatch}
-        initial-records={initialRecords}
-        show-soql={showSoql}
-        >
-    </c-datatable>
-    
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-card__header-link">{title}</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body">        
+            <c-datatable
+            s-object={sObject}
+            fields={fields}
+            sorted-by={sortedBy}
+            sorted-direction={sortedDirection}
+            filter={filter}
+            hide-checkbox-column={hideCheckboxColumn}
+            enable-infinite-loading={enableInfiniteLoading}
+            records-per-batch={recordsPerBatch}
+            initial-records={initialRecords}
+            show-soql={showSoql}
+            >
+            </c-datatable>
+        </div>
+    </article>
 </template>
