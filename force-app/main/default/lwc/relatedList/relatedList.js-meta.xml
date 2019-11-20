@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="relatedList">
+    <apiVersion>47.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Custom Related List</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__HomePage">
+            <property label="Object Name" required="true" name="sObject" type="String" default="Account"></property>
+            <property label="Fields" required="true" name="fields" type="String" default="Name,Phone,Website"></property>
+            <property label="Sort by" required="true" name="sortedBy" type="String" default="Name"></property>
+            <property label="Sort direction" name="sortedDirection" type="String" default="asc" datasource="asc,desc"></property>
+            <property label="Filter string" description="Filter part of query string - excluding WHERE. E.g. Name='Company Name'."  name="filter" type="String" default=""></property>
+            <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean"></property>
+            <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
+            <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
+            <property label="Initial records" description="Number of records to load initially" name="initialRecords" type="Integer"></property>
+            <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
+            <supportedFormFactors>
+                <supportedFormFactor type="Large"></supportedFormFactor>
+            </supportedFormFactors>
+        </targetConfig>
+        <targetConfig targets="lightning__RecordPage">
+            <property label="Object Name" required="true" name="sObject" type="String" default="Account"></property>
+            <property label="Fields" required="true" name="fields" type="String" default="Name,Phone,Website"></property>
+            <property label="Sort by" required="true" name="sortedBy" type="String" default="Name"></property>
+            <property label="Sort direction" name="sortedDirection" type="String" default="asc" datasource="asc,desc"></property>
+            <property label="Parent record field" description="Field on the parent record to filter by"  name="parentRecordField" type="String" default="Id"></property>
+            <property label="Child record field" description="Field on the child record to filter by"  name="childRecordField" type="String" default=""></property>
+            <property label="Filter string" description="Filter part of query string - excluding WHERE. E.g. Name='Company Name'."  name="filter" type="String" default=""></property>
+            <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean"></property>
+            <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
+            <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
+            <property label="Initial records" description="Number of records to load initially" name="initialRecords" type="Integer"></property>
+            <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
+            <supportedFormFactors>
+                <supportedFormFactor type="Large"></supportedFormFactor>
+            </supportedFormFactors>
+        </targetConfig>
+
+
+    </targetConfigs>
+</LightningComponentBundle>
