@@ -31,7 +31,7 @@ export default class RelatedList extends LightningElement {
   }
   @api hideCheckboxColumn;
   @api enableInfiniteLoading;
-  @api recordsPerBatch;
+  @api recordsPerBatch=50;
   @api initialRecords;
   @api showSoql;
   @api parentRecordField;
