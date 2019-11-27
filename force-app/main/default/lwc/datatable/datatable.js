@@ -2,7 +2,6 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
@@ -21,7 +20,6 @@ export default class Datatable extends LightningElement {
    ***/
   // _wiredResults;
   wiredResults;
-  parentRecord;
   _sObject;
   _filter;
   _search;
@@ -31,8 +29,6 @@ export default class Datatable extends LightningElement {
   _recordsPerBatch;
   _recordCount;
   _tableRequest = '';
-  _parentRecordField;
-  _childRecordField;
   objectInfo;
   @track _sortedDirection='asc';
   @track _sortedBy;
@@ -46,16 +42,10 @@ export default class Datatable extends LightningElement {
     { fieldName: 'Name', sortable: true, sorted: true, searchable: true, visible: true, sortDirection: 'asc' },
     { fieldName: 'Account.Name', searchable: true, sortable: true}
   ];*/
-  @api recordId;
-  @api objectApiName;
-  @api showSoql;
-
-  @api parentRecordField;
-
-  @api childRecordField;
-
   @api maxRecords=2000;
   @api recordsPerBatch=50;
+
+  @api showSoql;
 
 
   set columns(value) {
@@ -201,12 +191,6 @@ export default class Datatable extends LightningElement {
     this._selectedRows = [];
   }
 
-  @wire(getRecord, {recordId: '$recordId', fields: '$fullParentRecordField'})
-  wiredGetParentRecord(data) {
-    this.parentRecord = data;
-    this.tableRequest = 'reset';
-  }
-
   @wire(getObjectInfo, { objectApiName: '$sObject' })
   wiredObjectInfo({ error, data }) {
     if (data) {
@@ -297,33 +281,9 @@ export default class Datatable extends LightningElement {
     return soql;
   }
 
-  get fullParentRecordField() {
-    return this.objectApiName + '.' + this.parentRecordField;
-  }
-
-  get parentRecordId() {
-    if (this.parentRecordField && this.parentRecord && this.parentRecord.data)
-      return getFieldValue(this.parentRecord.data, this.fullParentRecordField);
-    return '';
-  }
-
-  get parentRelationship() {
-    if (this.parentRecordField && this.childRecordField) {
-      if (this.parentRecordId) {
-        return " " + this.childRecordField + " = '" + this.parentRecordId + "'";
-      }
-      return " " + this.childRecordField + " = ''";// return empty string so the query returns no results
-    }
-    return "";
-  }
 
   get where() {
     let filter = this.filter;
-    if (filter) {
-      filter += ' AND ' + this.parentRelationship;
-    } else {
-      filter = this.parentRelationship;
-    }
     let search;
     if (this.search) {
       let searchTerm = this.search.replace("'", "\\'");

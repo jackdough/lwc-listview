@@ -31,6 +31,9 @@
             ],
             "c/tableServiceUtils": [
                 "../../lwc-utils/lwc/tableServiceUtils/tableServiceUtils.js"
+            ],
+            "c/relatedList": [
+                "relatedList/relatedList.js"
             ]
         },
         "experimentalDecorators": true
