@@ -73,4 +73,8 @@ export default class RelatedList extends LightningElement {
     }
     return "";
   }
+
+  refresh() {
+    this.template.querySelector('c-datatable').refresh();
+  }
 }
