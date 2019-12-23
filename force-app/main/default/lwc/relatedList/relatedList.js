@@ -36,6 +36,7 @@ export default class RelatedList extends LightningElement {
   @api showSoql;
   @api parentRecordField;
   @api childRecordField;
+  @api editable;
 
   _parentRecordField;
   _childRecordField;

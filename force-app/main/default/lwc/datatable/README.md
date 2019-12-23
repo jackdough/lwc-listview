@@ -8,7 +8,8 @@ Takes as input an sObject and an array of fields and populates a datatable with 
         fieldName,
         searchable (defaults to true on text fields),
         sortable (defaults to true),
-        visible (defaults to true)
+        visible (defaults to true),
+        editable (defaults to table setting),
     }
 
 ### Row Actions:
@@ -27,6 +28,7 @@ Name | Type |Read only | Required | Description | Default value
 `fields`|array||✔|fields to display. Optionally a comma separated list of fields
 `sorted-by`|string||✔|field to sort table by
 `sorted-direction`|string|||`asc` or `desc`|`asc`
+`editable`|boolean|||make the entire table editable (by default). this can also be set on the field level|`false`
 `filter`|string|||string to filter by - excluding the where clause. e.g. `Name='Bob' AND Total_Donations__c > 1000`
 `search`|string|||text to search in all searchable text fields
 `row-actions`|array or function|||array of row actions to display on each row. optionally a function which takes as input the rwo of the datable and returns an array of row actions

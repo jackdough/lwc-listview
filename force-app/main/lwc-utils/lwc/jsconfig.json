@@ -20,6 +20,9 @@
             "c/massActions": [
                 "../../default/lwc/massActions/massActions.js"
             ],
+            "c/relatedList": [
+                "../../default/lwc/relatedList/relatedList.js"
+            ],
             "c/datatableImperativeExample": [
                 "datatableImperativeExample/datatableImperativeExample.js"
             ],
