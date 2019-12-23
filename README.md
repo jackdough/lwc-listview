@@ -13,4 +13,8 @@ To deploy authorize a dev hub in sfdx and run `$ sfdx force:org:create -f config
 
 ## Description of Files and Directories
 
+### [Datatable](force-app/main/default/lwc/datatable)
+[README](force-app/main/default/lwc/datatable/README.md)
+
+
 ## Issues
