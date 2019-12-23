@@ -16,7 +16,7 @@ To deploy authorize a dev hub in sfdx and run `$ sfdx force:org:create -f config
 ### [datatable](force-app/main/default/lwc/datatable)
 Takes as input an sObject and an array of fields and populates a datatable with records from the database.
 
-### [Custom Related List](force-app/main/default/lwc/related-list)
+### [Custom Related List](force-app/main/default/lwc/relatedList)
 Related list for use on lightning app and record pages. Choose object, fields, etc.
 
 ## Issues
