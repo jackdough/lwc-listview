@@ -21,6 +21,7 @@
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
             <property label="Initial records" description="Number of records to load initially" name="initialRecords" type="Integer"></property>
+            <property label="Height" name="height" type="Integer"></property>
             <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
             <supportedFormFactors>
                 <supportedFormFactor type="Large"></supportedFormFactor>
@@ -40,6 +41,7 @@
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
             <property label="Initial records" description="Number of records to load initially" name="initialRecords" type="Integer"></property>
+            <property label="Height" name="height" type="Integer"></property>
             <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
             <supportedFormFactors>
                 <supportedFormFactor type="Large"></supportedFormFactor>

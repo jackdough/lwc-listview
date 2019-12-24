@@ -37,6 +37,7 @@ export default class RelatedList extends LightningElement {
   @api parentRecordField;
   @api childRecordField;
   @api editable;
+  @api height=300;
 
   _parentRecordField;
   _childRecordField;
@@ -77,5 +78,11 @@ export default class RelatedList extends LightningElement {
 
   refresh() {
     this.template.querySelector('c-datatable').refresh();
+  }
+  get customStyle() {
+    if (this.height) {
+      return 'height:'+this.height+'px';
+    }
+    return '';
   }
 }
