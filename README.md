@@ -2,7 +2,7 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=0Ho6g000000blMhCAI) version 0.1.0-2
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000003flJHAAY) version 0.1.0-2
 
 
 ## Dev, Build and Test
