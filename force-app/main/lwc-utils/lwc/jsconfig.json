@@ -2,9 +2,6 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "c/contactListView": [
-                "../../default/lwc/contactListView/contactListView.js"
-            ],
             "c/datatable": [
                 "../../default/lwc/datatable/datatable.js"
             ],
