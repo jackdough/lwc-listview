@@ -4,6 +4,8 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 
 
 export default class RelatedList extends LightningElement {
+  @api showAddButton;
+  @api modalEdit;
   _title;
   @api
   get title() {
@@ -84,5 +86,20 @@ export default class RelatedList extends LightningElement {
       return 'height:'+this.height+'px';
     }
     return '';
+  }
+
+  get addRecordTitle() {
+    return this.objectInfo ? 'New ' + this.objectInfo.label : 'Loading...';
+  }
+
+  createNew() {
+    this.template.querySelector('c-modal').open();
+  }
+  handleCancel() {
+    this.template.querySelector('c-modal').close();
+  }
+  handleSuccess() {
+    this.template.querySelector('c-datatable').refresh();
+    this.template.querySelector('c-modal').close();
   }
 }

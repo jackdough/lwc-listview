@@ -16,7 +16,9 @@
             <property label="Sort by" required="true" name="sortedBy" type="String" default="Name"></property>
             <property label="Sort direction" name="sortedDirection" type="String" default="asc" datasource="asc,desc"></property>
             <property label="Filter string" description="Filter part of query string - excluding WHERE. E.g. Name='Company Name'."  name="filter" type="String" default=""></property>
-            <property label="Allow editing"  name="editable" type="Boolean"></property>
+            <property label="Inline edit"  name="editable" type="Boolean"></property>
+            <!-- <property label="Allow editing"  name="modalEdit" type="Boolean"></property> -->
+            <property label="Show new record button"  name="showAddButton" type="Boolean"></property>
             <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean"></property>
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
@@ -36,7 +38,9 @@
             <property label="Parent record field" description="Field on the parent record to filter by"  name="parentRecordField" type="String" default="Id"></property>
             <property label="Child record field" description="Field on the child record to filter by"  name="childRecordField" type="String" default=""></property>
             <property label="Filter string" description="Filter part of query string - excluding WHERE. E.g. Name='Company Name'."  name="filter" type="String" default=""></property>
-            <property label="Allow editing"  name="editable" type="Boolean"></property>
+            <property label="Inline edit"  name="editable" type="Boolean"></property>
+            <!-- <property label="Allow editing"  name="modalEdit" type="Boolean"></property> -->
+            <property label="Show new record button"  name="showAddButton" type="Boolean"></property>
             <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean"></property>
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
