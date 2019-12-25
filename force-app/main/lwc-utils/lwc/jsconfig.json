@@ -31,6 +31,9 @@
             ],
             "c/tableServiceUtils": [
                 "tableServiceUtils/tableServiceUtils.js"
+            ],
+            "c/modal": [
+                "../../default/lwc/modal/modal.js"
             ]
         },
         "experimentalDecorators": true
