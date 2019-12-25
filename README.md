@@ -2,7 +2,13 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000003flJHAAY) version 0.1.0-2
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000003fpyTAAQ) version 0.1.0-3
+
+## Release Notes
+# 0.1.0-3
+- Add option to create a record from a related list
+# 0.1.0-2
+- Add option to edit related list inline
 
 
 ## Dev, Build and Test
