@@ -29,6 +29,8 @@ Takes as input an sObject and an array of fields and populates a datatable with 
 
 ### [Custom Related List](force-app/main/default/lwc/relatedList)
 Related list for use on lightning app and record pages. Choose object, fields, etc.
+
+Fields accepts a comma separated list of fields, or a JSON list with field information. For more documentation see [datatable](force-app/main/default/lwc/datatable)
 ![](resources/datatable/demo.gif)
 
 ## Issues
