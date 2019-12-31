@@ -23,10 +23,10 @@ export default class RelatedList extends LightningElement {
   _filter;
   @api
   get filter() {
-    if (this._filter) {
+    if (this._filter && this.parentRelationship) {
       return this._filter + ' AND ' + this.parentRelationship;
     }
-    return this.parentRelationship;
+    return this._filter || this.parentRelationship;
   }
   set filter(value) {
     this._filter = value;
