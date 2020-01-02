@@ -357,6 +357,7 @@ export default class Datatable extends LightningElement {
           col.sortable = field.sortable;
           col.visible = field.visible;
           col.editable = field.editable;
+          if (typeof field.label !== 'undefined') col.label = field.label;
         }
         return col;
       })
