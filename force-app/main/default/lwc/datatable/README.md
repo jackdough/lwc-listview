@@ -13,6 +13,23 @@ Takes as input an sObject and an array of fields and populates a datatable with 
         editable (defaults to table setting),
     }
 
+#### Example:
+    
+    [
+        {
+            "fieldName": "Name"
+        },
+        {
+            "fieldName": "Phone",
+            "sortable": false,
+            "editable": true
+        },
+        {
+            "fieldName": "Account.Website",
+            "label": "Website"
+        }
+    ]
+
 ### Row Actions:
 Contains a label and a callback that does something with the selected row. The callback should take an input of a row object and return a promise. If the return value is `false` the row will be deleted from the datatable, otherwise the row will be updated with return value of the promise (if there is one).
 
