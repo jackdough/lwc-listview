@@ -2,9 +2,12 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000003fpyYAAQ) version 0.2.0-0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000003hxs6AAA) version 0.3.0-0
 
 ## Release Notes
+### 0.3.0-0
+- Allow custom label on datatable columns
+- Fix issue in related list that prevented using a filter string if there was no parent-child relationship set.
 ### 0.2.0-0
 - Add option to create a record from a related list
 ### 0.1.0-2
