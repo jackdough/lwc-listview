@@ -14,6 +14,8 @@
       enable-infinite-loading={_enableInfiniteLoading}
       onloadmore={loadMoreData}
       onrowaction={handleRowAction}
+      onsave={handleSave}
+      draft-values={draftValues}
       >
     </lightning-datatable>
     <div if:true={isLoading}>

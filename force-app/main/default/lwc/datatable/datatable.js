@@ -2,6 +2,7 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { updateRecord, generateRecordInputForUpdate } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
@@ -35,6 +36,7 @@ export default class Datatable extends LightningElement {
   @track _enableInfiniteLoading;
   @track _selectedRows = [];
   @track _isLoading = true;
+  @track draftValues=[];
   @track data;
   @track _columns;
   @track _fields = [];/*[ // default value - sample. either way we need to document the sample
@@ -44,7 +46,7 @@ export default class Datatable extends LightningElement {
   ];*/
   @api maxRecords=2000;
   @api recordsPerBatch=50;
-
+  @api editable;
   @api showSoql;
 
 
@@ -150,6 +152,8 @@ export default class Datatable extends LightningElement {
         else field.visible = !!field.visible; // convert to boolean
         if (typeof field.sortable === 'undefined') field.sortable = true; // default true
         else field.sortable = !!field.sortable; // convert to boolean
+        if (typeof field.editable === 'undefined') field.editable = !field.fieldName.endsWith('Name') && !field.fieldName.endsWith('Link') && !field.fieldName.endsWith('Id') && this.editable; // default to global setting
+        else field.editable = !!field.editable; // convert to boolean
       });
     } else {
       this.error('`fields` is required');
@@ -173,7 +177,7 @@ export default class Datatable extends LightningElement {
 
   @api
   get selectedRows() {
-    return this._selectedRows.map(row => { return row.charAt(0) === '/' ? row.slice(1) : row }); // remove prepended forward slash
+    return this._selectedRows;//.map(row => { return row.charAt(0) === '/' ? row.slice(1) : row }); // remove prepended forward slash
   }
 
   @api
@@ -344,14 +348,16 @@ export default class Datatable extends LightningElement {
     columns = JSON.parse(JSON.stringify(columns))
       .map(col => {
         let fieldName = col.fieldName;
-        if (fieldName.endsWith('Id')) { // special case for salesforce relationship fields (this will not work for custom relationships)
-          fieldName = fieldName.replace('_Id', '.Name');
-          fieldName = fieldName.replace('Id', 'Name')
+        if (fieldName.endsWith('Link')) { // special case for salesforce relationship fields (this will not work for custom relationships)
+          fieldName = fieldName.replace('_Link', '.Name');
+          fieldName = fieldName.replace('Link', 'Name')
         }
         let field = this.fields.find(f => (f.fieldName === fieldName));
         if (field) { // copy values from fields list to columns list
           col.sortable = field.sortable;
           col.visible = field.visible;
+          col.editable = field.editable;
+          if (typeof field.label !== 'undefined') col.label = field.label;
         }
         return col;
       })
@@ -369,9 +375,9 @@ export default class Datatable extends LightningElement {
 
   updateSortField(event) {
     let fieldName = event.detail.fieldName;
-    if (fieldName.endsWith('Id')) { // special case for salesforce relationship fields (this will not work for custom relationships)
-      fieldName = fieldName.replace('_Id', '.Name');
-      fieldName = fieldName.replace('Id', 'Name')
+    if (fieldName.endsWith('Link')) { // special case for salesforce relationship fields (this will not work for custom relationships)
+      fieldName = fieldName.replace('_Link', '.Name');
+      fieldName = fieldName.replace('Link', 'Name')
     }
     this.sortedBy = fieldName;
     this.sortedDirection = event.detail.sortDirection;
@@ -414,4 +420,40 @@ export default class Datatable extends LightningElement {
       }
     }));
   }
+
+  handleSave(event) {
+    let updatePromises = event.detail.draftValues.map(row=> {
+      // let recordForUpdate = generateRecordInputForUpdate({id: row.Id, fields:row},this.objectInfo);
+      return updateRecord({fields: row});
+    });
+
+    Promise.all(updatePromises)
+      .then(()=> {
+        this.draftValues = [];
+        this.refresh();
+      })
+      .catch(error=>{
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: 'Error updating records',
+            message: error.body.message,
+            variant: 'error'
+          })
+        );
+      });
+    console.log(event);
+  }
+
+  // based on https://stackoverflow.com/a/31536517
+  createCsv(columns, rows) {
+    const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
+    const fields = columns.map(col=>col.fieldName);
+    let csv = rows.map(row => fields.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+    csv.unshift(columns.map(col=>JSON.stringify(col.label)).join(','));
+    csv = csv.join('\r\n');
+  }
+
+  // getAllRows() {
+  //   // return Promise.resolve();
+  // }
 }

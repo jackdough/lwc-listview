@@ -198,7 +198,7 @@ public with sharing class DataTableService {
         fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(Schema.DisplayType.Reference));
         
         // Override the fieldName with a url to the id
-        fieldColumn.put('fieldName', flatFieldName.replace('Name', 'Id'));
+        fieldColumn.put('fieldName', flatFieldName.replace('Name', 'Link'));
 
         // For the field label, given by URL typeAttribute
         Map<String, Object> typeAttributes = new Map<String, Object>();

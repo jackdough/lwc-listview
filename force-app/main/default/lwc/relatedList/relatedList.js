@@ -4,6 +4,8 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 
 
 export default class RelatedList extends LightningElement {
+  @api showAddButton;
+  @api modalEdit;
   _title;
   @api
   get title() {
@@ -21,10 +23,10 @@ export default class RelatedList extends LightningElement {
   _filter;
   @api
   get filter() {
-    if (this._filter) {
+    if (this._filter && this.parentRelationship) {
       return this._filter + ' AND ' + this.parentRelationship;
     }
-    return this.parentRelationship;
+    return this._filter || this.parentRelationship;
   }
   set filter(value) {
     this._filter = value;
@@ -36,6 +38,8 @@ export default class RelatedList extends LightningElement {
   @api showSoql;
   @api parentRecordField;
   @api childRecordField;
+  @api editable;
+  @api height;
 
   _parentRecordField;
   _childRecordField;
@@ -76,5 +80,26 @@ export default class RelatedList extends LightningElement {
 
   refresh() {
     this.template.querySelector('c-datatable').refresh();
+  }
+  get customStyle() {
+    if (this.height) {
+      return 'height:'+this.height+'px';
+    }
+    return '';
+  }
+
+  get addRecordTitle() {
+    return this.objectInfo ? 'New ' + this.objectInfo.label : 'Loading...';
+  }
+
+  createNew() {
+    this.template.querySelector('c-modal').open();
+  }
+  handleCancel() {
+    this.template.querySelector('c-modal').close();
+  }
+  handleSuccess() {
+    this.template.querySelector('c-datatable').refresh();
+    this.template.querySelector('c-modal').close();
   }
 }

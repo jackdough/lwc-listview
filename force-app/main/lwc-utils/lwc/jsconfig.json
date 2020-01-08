@@ -2,9 +2,6 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "c/contactListView": [
-                "../../default/lwc/contactListView/contactListView.js"
-            ],
             "c/datatable": [
                 "../../default/lwc/datatable/datatable.js"
             ],
@@ -20,6 +17,9 @@
             "c/massActions": [
                 "../../default/lwc/massActions/massActions.js"
             ],
+            "c/relatedList": [
+                "../../default/lwc/relatedList/relatedList.js"
+            ],
             "c/datatableImperativeExample": [
                 "datatableImperativeExample/datatableImperativeExample.js"
             ],
@@ -31,6 +31,9 @@
             ],
             "c/tableServiceUtils": [
                 "tableServiceUtils/tableServiceUtils.js"
+            ],
+            "c/modal": [
+                "../../default/lwc/modal/modal.js"
             ]
         },
         "experimentalDecorators": true

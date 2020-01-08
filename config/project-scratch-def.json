@@ -7,10 +7,14 @@
     "ProcessBuilder"
   ],
   "settings": {
-      "orgPreferenceSettings" : {
-          "s1DesktopEnabled" : true,
-          "enhancedEmailEnabled": true,
-          "s1EncryptedStoragePref2": false
-      }
+    "lightningExperienceSettings": {
+        "enableS1DesktopEnabled": true
+    },
+    "emailAdministrationSettings": {
+        "enableEnhancedEmailEnabled": true
+    },
+    "mobileSettings": {
+        "enableS1EncryptedStoragePref2": false
+    }
   }
 }

@@ -41,7 +41,7 @@ const applyLinks = (flatData) => {
   for (let row of dataClone) {
     Object.keys(row).forEach(key => {
       if (key.endsWith('Id')) {
-        row[key] = '/'+row[key];
+        row[key.replace('Id','Link')] = '/'+row[key];
       }
     });
   }

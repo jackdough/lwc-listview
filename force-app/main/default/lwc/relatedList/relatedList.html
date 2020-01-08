@@ -11,11 +11,16 @@
                         <span class="slds-card__header-link">{title}</span>
                     </h2>
                 </div>
-                <lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon>
+                
+                <lightning-button-group>
+                    <lightning-button-icon icon-name="utility:add" onclick={createNew} if:true={showAddButton}></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon>
+                </lightning-button-group>
             </header>
         </div>
-        <div class="slds-card__body">        
+        <div class="slds-card__body" style={customStyle}>        
             <c-datatable
+            editable={editable}
             s-object={sObject}
             fields={fields}
             sorted-by={sortedBy}
@@ -30,4 +35,13 @@
             </c-datatable>
         </div>
     </article>
+    <c-modal header-text={addRecordTitle} hide-footer="true" onclose={handleCancel}>
+        <lightning-record-form slot="content"
+            mode="edit"
+            layout-type="Full"
+            object-api-name={sObject}
+            onsuccess={handleSuccess}
+            oncancel={handleCancel}
+        ></lightning-record-form>
+    </c-modal>
 </template>
