@@ -1,0 +1,18 @@
+<template>
+    <div class={editClass}>
+        <div class="slds-grid slds-grid_align-spread">
+            {value}
+            <template if:true={editable}>
+                <lightning-button-icon
+                    class="slds-m-left_x-small edit-button"
+                    icon-class="slds-icon-text-default" 
+                    variant="bare"
+                    icon-name="utility:edit" 
+                    onclick={handleEdit}
+                    >
+                </lightning-button-icon
+                >
+            </template>
+        </div>
+    </div>
+</template>

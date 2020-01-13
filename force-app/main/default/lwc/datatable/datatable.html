@@ -1,7 +1,7 @@
 <template>
   <template if:true={showSoql}>{query}</template>
   <div if:true={data} class="slds-is-relative" style="height: 100%">
-    <lightning-datatable
+    <c-datatable-base
       hide-checkbox-column={hideCheckboxColumn}
       data={data}
       columns={_columns}
@@ -17,7 +17,7 @@
       onsave={handleSave}
       draft-values={draftValues}
       >
-    </lightning-datatable>
+    </c-datatable-base>
     <div if:true={isLoading}>
       <lightning-spinner size="large" variant="brand" alternative-text="Loading data..."></lightning-spinner>
     </div>

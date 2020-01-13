@@ -32,7 +32,7 @@ public with sharing class DataTableService {
     Schema.DisplayType.MultiPicklist  => 'text',
     Schema.DisplayType.Percent        => 'percent',
     Schema.DisplayType.Phone          => 'phone',
-    Schema.DisplayType.Picklist       => 'text',
+    Schema.DisplayType.Picklist       => 'picklist',
     Schema.DisplayType.Reference      => 'url',
     Schema.DisplayType.String         => 'text',
     Schema.DisplayType.TextArea       => 'text',

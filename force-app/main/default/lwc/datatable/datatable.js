@@ -152,7 +152,12 @@ export default class Datatable extends LightningElement {
         else field.visible = !!field.visible; // convert to boolean
         if (typeof field.sortable === 'undefined') field.sortable = true; // default true
         else field.sortable = !!field.sortable; // convert to boolean
-        if (typeof field.editable === 'undefined') field.editable = !field.fieldName.endsWith('Name') && !field.fieldName.endsWith('Link') && !field.fieldName.endsWith('Id') && this.editable; // default to global setting
+        if (typeof field.editable === 'undefined') field.editable = (
+          field.fieldName === 'StageName' ||
+          !field.fieldName.endsWith('Name') // &&
+          // !field.fieldName.endsWith('Link') &&
+          // !field.fieldName.endsWith('Id')
+          ) && this.editable; // default to global setting
         else field.editable = !!field.editable; // convert to boolean
       });
     } else {
@@ -358,6 +363,9 @@ export default class Datatable extends LightningElement {
           col.visible = field.visible;
           col.editable = field.editable;
           if (typeof field.label !== 'undefined') col.label = field.label;
+          if (typeof col.typeAttributes === 'undefined') col.typeAttributes = {};
+          col.typeAttributes.editable = field.editable;
+          col.typeAttributes.options = field.options;
         }
         return col;
       })
