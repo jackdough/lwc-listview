@@ -1,0 +1,43 @@
+:host>div {
+    display: block;
+    padding: var(--lwc-spacingXxSmall);
+    margin: 1px;
+}
+
+.editable:hover {
+    background-color: white;
+}
+
+.edited, .edited:hover {
+    background-color: var(--lwc-colorBackgroundHighlight);
+}
+
+.edit-button {
+    visibility: hidden;
+}
+
+:host:hover .edit-button {
+    visibility: visible;
+    opacity: .5;
+}
+
+.edited .edit-button {
+    visibility: visible;
+    opacity: 1;
+}
+
+.editor {
+    position: absolute !important;
+    min-width: 100%;
+    z-index: 1; 
+    top: -1px;
+    left: -1px;
+    display:block; 
+    background-color:white;
+    border: 1px solid lightgray;
+    padding: var(--lwc-spacingXxSmall);
+}
+
+lightning-combobox {
+    min-width: 100%;
+}
