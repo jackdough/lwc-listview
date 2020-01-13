@@ -12,12 +12,24 @@ export default class DatatablePicklistField extends LightningElement {
         this.editedValue = value;
     }
 
-    @api options;
+    @api 
+    get options() {
+        return this._options;
+    }
+    set options(value) {
+        this._options = value;
+        this.valueToLabelMap.reduce((acc,opt) => {
+            acc[opt.value] = opt.label;
+            return acc;
+        }, {});
+    }
     @api editable;
 
     @track editing;
     @track _value;
     @track editedValue;
+    @track _options;
+    valueToLabelMap;
     editRendered;
     // render() {
     //     return this.editing ? editTemplate : displayTemplate;
@@ -50,6 +62,8 @@ export default class DatatablePicklistField extends LightningElement {
             this.editedValue === this.value ? '' : 'edited';
     }
 
-
+    get displayValue() {
+        return this.valueToLabelMap[this.editedValue];
+    }
 
 }
