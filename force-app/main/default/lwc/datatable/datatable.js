@@ -139,7 +139,7 @@ export default class Datatable extends LightningElement {
         value = value.split(',')
           .map(field => {
             return {
-              fieldName: field
+              fieldName: field.trim()
             };
           });
       }
