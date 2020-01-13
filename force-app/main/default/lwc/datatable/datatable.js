@@ -161,7 +161,7 @@ export default class Datatable extends LightningElement {
         else field.editable = !!field.editable; // convert to boolean
         if (field.options && Array.isArray(field.options) && field.options.every(opt=> typeof opt === 'string')) {
           field.options = field.options.map(opt => {return {label: opt, value: opt}});
-      }
+        }
       });
     } else {
       this.error('`fields` is required');
