@@ -188,6 +188,20 @@ public with sharing class DataTableService {
       fieldColumn.put('label', field.getLabel());
       fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
       fieldColumn.put('fieldName', flatFieldName);
+      
+      if (field.getType() == Schema.DisplayType.PICKLIST) {
+        Schema.PicklistEntry[] picklistEntries = field.getPicklistValues();
+        Object[] picklistValues = new Object[]{};
+        for (Schema.PicklistEntry pe : picklistEntries) {
+          if (pe.isActive()) {
+            Map<String,String> pv = new Map<String,String>();
+            pv.put('label',pe.getLabel());
+            pv.put('value',pe.getValue());
+            picklistValues.add(pv);
+          }
+        }
+        fieldColumn.put('options', picklistValues);
+      }
 
       // Fields with Name are typically hyperlinked
       if (

@@ -2,17 +2,19 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000004Nw0mAAC) version 0.4.0-1
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000004O28tAAC) version 0.5.0
 
 ## Release Notes
-### 0.4.0-1
+### 0.5.0
+- Picklist fields dropdown are auto populated, options will now override the default. Does not support RecordType dependent picklists.
+### 0.4.0
 - Picklist fields! The options need to be manually set on the field JSON using the `options` property. Accepts an array of strings or `{label, value}` objects
-### 0.3.0-0
+### 0.3.0
 - Allow custom label on datatable columns
 - Fix issue in related list that prevented using a filter string if there was no parent-child relationship set.
-### 0.2.0-0
+### 0.2.0
 - Add option to create a record from a related list
-### 0.1.0-2
+### 0.1.0
 - Add option to edit related list inline
 
 
