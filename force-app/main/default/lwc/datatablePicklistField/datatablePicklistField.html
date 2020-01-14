@@ -1,7 +1,7 @@
 <template>
     <div class={editClass}>
         <div class="slds-grid slds-grid_align-spread">
-            {displayValue}
+            <span>{displayValue}</span>
             <template if:true={editable}>
                 <lightning-button-icon
                     class="slds-m-left_x-small edit-button"
@@ -19,7 +19,7 @@
         <lightning-combobox 
             name="picklist"
             variant="label-hidden"
-            value={editedValue}
+            value={value}
             options={options}
             onchange={handleChange}
             onblur={handleFocusout}>

@@ -8,10 +8,6 @@
     background-color: white;
 }
 
-.edited, .edited:hover {
-    background-color: var(--lwc-colorBackgroundHighlight);
-}
-
 .edit-button {
     visibility: hidden;
 }
@@ -21,7 +17,7 @@
     opacity: .5;
 }
 
-.edited .edit-button {
+:host:focus .editable .edit-button {
     visibility: visible;
     opacity: 1;
 }

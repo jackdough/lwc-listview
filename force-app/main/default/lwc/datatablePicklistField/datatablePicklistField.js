@@ -3,15 +3,9 @@ import { LightningElement, api, track, wire } from 'lwc';
 // import editTemplate from './edit.html'
 
 export default class DatatablePicklistField extends LightningElement {
-    @api 
-    get value() {
-        return this._value;
-    }
-    set value(value) {
-        this._value = value;
-        this.editedValue = value;
-    }
-
+    @api rowKeyValue;
+    @api colKeyValue;
+    @api value;
     @api 
     get options() {
         return this._options;
@@ -26,8 +20,6 @@ export default class DatatablePicklistField extends LightningElement {
     @api editable;
 
     @track editing;
-    @track _value;
-    @track editedValue;
     @track _options;
     valueToLabelMap={};
     editRendered;
@@ -53,17 +45,26 @@ export default class DatatablePicklistField extends LightningElement {
     }
 
     handleChange(event) {
-        this.editedValue = event.detail.value;
+        event.stopPropagation();
+        this.dispatchEvent(new CustomEvent('change', {
+            detail: {
+                value: event.detail.value,
+                rowKeyValue: this.rowKeyValue,
+                colKeyValue: this.colKeyValue
+            },
+            bubbles: true,
+            composed: true
+        }));
         this.editing = false;
+        // this.template.focus();
     }
 
     get editClass() {
-        return (this.editable ? 'editable ' : '') + 
-            (this.editedValue === this.value ? '' : 'edited');
+        return this.editable ? 'editable ' : '';
     }
 
     get displayValue() {
-        return this.valueToLabelMap[this.editedValue] || this.editedValue;
+        return this.valueToLabelMap[this.value] || this.value;
     }
 
 }

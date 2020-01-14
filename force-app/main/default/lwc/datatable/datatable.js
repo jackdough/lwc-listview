@@ -455,6 +455,21 @@ export default class Datatable extends LightningElement {
     console.log(event);
   }
 
+  handleFieldEdit(event) {
+    const {value, rowKeyValue, colKeyValue} = event.detail;
+    const draftValues = this.template.querySelector('c-datatable-base').draftValues;
+    if (rowKeyValue) {
+      let currentRow = draftValues && draftValues.find(row => row.Id === rowKeyValue);
+      if (!currentRow) {
+        currentRow = {Id: rowKeyValue};
+        draftValues.push(currentRow);
+      }
+      currentRow[colKeyValue.split('-')[0]] = value;
+      this.draftValues = [...draftValues];
+    }
+    console.log(event);
+  }
+
   // based on https://stackoverflow.com/a/31536517
   createCsv(columns, rows) {
     const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
