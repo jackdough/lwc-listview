@@ -370,7 +370,7 @@ export default class Datatable extends LightningElement {
           col.label = field.label || col.label;
           col.typeAttributes = col.typeAttributes || {};
           col.typeAttributes.editable = field.editable;
-          col.typeAttributes.options = field.options || col.options;
+          col.typeAttributes.options = field.options || col.options || [];
         }
         return col;
       })

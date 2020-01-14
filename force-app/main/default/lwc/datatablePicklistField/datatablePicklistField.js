@@ -18,6 +18,9 @@ export default class DatatablePicklistField extends LightningElement {
         return this._options;
     }
     set options(value) {
+        if (!Array.isArray(value)) {
+            throw new Error('Picklist options must be an array');
+        }
         this._options = value;
         this.valueToLabelMap = value.reduce((acc,opt) => {
             acc[opt.value] = opt.label;
