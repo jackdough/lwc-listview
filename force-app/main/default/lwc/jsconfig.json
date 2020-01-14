@@ -32,8 +32,11 @@
             "c/tableServiceUtils": [
                 "../../lwc-utils/lwc/tableServiceUtils/tableServiceUtils.js"
             ],
-            "c/modal": [
-                "modal/modal.js"
+            "c/datatableBase": [
+                "datatableBase/datatableBase.js"
+            ],
+            "c/datatablePicklistField": [
+                "datatablePicklistField/datatablePicklistField.js"
             ]
         },
         "experimentalDecorators": true

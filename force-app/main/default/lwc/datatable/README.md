@@ -11,7 +11,9 @@ Takes as input an sObject and an array of fields and populates a datatable with 
         sortable (defaults to true),
         visible (defaults to true),
         editable (defaults to table setting),
+        options (array of options for picklist - Array of strings or objects with `label` and `value`)
     }
+
 
 #### Example:
     

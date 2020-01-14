@@ -2,9 +2,11 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000003hxs6AAA) version 0.3.0-0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000004Nw0mAAC) version 0.4.0-1
 
 ## Release Notes
+### 0.4.0-1
+- Picklist fields! The options need to be manually set on the field JSON using the `options` property. Accepts an array of strings or `{label, value}` objects
 ### 0.3.0-0
 - Allow custom label on datatable columns
 - Fix issue in related list that prevented using a filter string if there was no parent-child relationship set.

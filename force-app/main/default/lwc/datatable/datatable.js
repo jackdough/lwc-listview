@@ -139,7 +139,7 @@ export default class Datatable extends LightningElement {
         value = value.split(',')
           .map(field => {
             return {
-              fieldName: field
+              fieldName: field.trim()
             };
           });
       }
@@ -152,8 +152,16 @@ export default class Datatable extends LightningElement {
         else field.visible = !!field.visible; // convert to boolean
         if (typeof field.sortable === 'undefined') field.sortable = true; // default true
         else field.sortable = !!field.sortable; // convert to boolean
-        if (typeof field.editable === 'undefined') field.editable = !field.fieldName.endsWith('Name') && !field.fieldName.endsWith('Link') && !field.fieldName.endsWith('Id') && this.editable; // default to global setting
+        if (typeof field.editable === 'undefined') field.editable = (
+          field.fieldName === 'StageName' ||
+          !field.fieldName.endsWith('Name') // &&
+          // !field.fieldName.endsWith('Link') &&
+          // !field.fieldName.endsWith('Id')
+          ) && this.editable; // default to global setting
         else field.editable = !!field.editable; // convert to boolean
+        if (field.options && Array.isArray(field.options) && field.options.every(opt=> typeof opt === 'string')) {
+          field.options = field.options.map(opt => {return {label: opt, value: opt}});
+        }
       });
     } else {
       this.error('`fields` is required');
@@ -358,6 +366,9 @@ export default class Datatable extends LightningElement {
           col.visible = field.visible;
           col.editable = field.editable;
           if (typeof field.label !== 'undefined') col.label = field.label;
+          if (typeof col.typeAttributes === 'undefined') col.typeAttributes = {};
+          col.typeAttributes.editable = field.editable;
+          col.typeAttributes.options = field.options;
         }
         return col;
       })
@@ -442,6 +453,20 @@ export default class Datatable extends LightningElement {
         );
       });
     console.log(event);
+  }
+
+  handleFieldEdit(event) {
+    const {value, rowKeyValue, colKeyValue} = event.detail;
+    const draftValues = this.template.querySelector('c-datatable-base').draftValues;
+    if (rowKeyValue) {
+      let currentRow = draftValues && draftValues.find(row => row.Id === rowKeyValue);
+      if (!currentRow) {
+        currentRow = {Id: rowKeyValue};
+        draftValues.push(currentRow);
+      }
+      currentRow[colKeyValue.split('-')[0]] = value;
+      this.draftValues = [...draftValues];
+    }
   }
 
   // based on https://stackoverflow.com/a/31536517
