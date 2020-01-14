@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { LightningElement, track, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getObjectInfo, getPicklistValues } from 'lightning/uiObjectInfoApi';
 import { updateRecord, generateRecordInputForUpdate } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
@@ -282,7 +282,9 @@ export default class Datatable extends LightningElement {
 
   @api
   get query() {
-    let soql = 'SELECT ' + (this.fields.some(field => field.fieldName === 'Id') ? '' : 'Id,') + // include Id in query if is not defined
+    let soql = 'SELECT ' + 
+      (this.fields.some(field => field.fieldName === 'Id') ? '' : 'Id,') + // include Id in query if is not defined
+      // (this.fields.some(field => field.fieldName === 'RecordTypeId') ? '' : 'RecordTypeId,') + // include record type Id in query if is not defined
       this.fields
         // .filter(field => field.visible) // exclude fields set to not be visible
         // .filter(field => field.fieldName.includes('.') || !this.objectInfo && this.objectInfo.fields[field.fieldName]) // exclude fields that are not existent (does not check related fields)
@@ -365,10 +367,10 @@ export default class Datatable extends LightningElement {
           col.sortable = field.sortable;
           col.visible = field.visible;
           col.editable = field.editable;
-          if (typeof field.label !== 'undefined') col.label = field.label;
-          if (typeof col.typeAttributes === 'undefined') col.typeAttributes = {};
+          col.label = field.label || col.label;
+          col.typeAttributes = col.typeAttributes || {};
           col.typeAttributes.editable = field.editable;
-          col.typeAttributes.options = field.options;
+          col.typeAttributes.options = field.options || col.options;
         }
         return col;
       })
@@ -476,6 +478,10 @@ export default class Datatable extends LightningElement {
     let csv = rows.map(row => fields.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
     csv.unshift(columns.map(col=>JSON.stringify(col.label)).join(','));
     csv = csv.join('\r\n');
+  }
+
+  getPicklistOptions(fieldName) {
+    getPicklistValues()
   }
 
   // getAllRows() {
