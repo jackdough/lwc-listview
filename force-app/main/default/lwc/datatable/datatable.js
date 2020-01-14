@@ -467,7 +467,6 @@ export default class Datatable extends LightningElement {
       currentRow[colKeyValue.split('-')[0]] = value;
       this.draftValues = [...draftValues];
     }
-    console.log(event);
   }
 
   // based on https://stackoverflow.com/a/31536517
