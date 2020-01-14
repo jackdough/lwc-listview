@@ -5,7 +5,14 @@ import { LightningElement, api, track, wire } from 'lwc';
 export default class DatatablePicklistField extends LightningElement {
     @api rowKeyValue;
     @api colKeyValue;
-    @api value;
+    @api 
+    get value() {
+        return this._value;
+    }
+    set value(val) {
+        this._value = val;
+        this._editedValue = val;
+    }
     @api 
     get options() {
         return this._options;
@@ -21,11 +28,10 @@ export default class DatatablePicklistField extends LightningElement {
 
     @track editing;
     @track _options;
+    _editedValue;
     valueToLabelMap={};
     editRendered;
-    // render() {
-    //     return this.editing ? editTemplate : displayTemplate;
-    // }
+
     renderedCallback() {
         const combobox = this.template.querySelector('lightning-combobox');
         if (!combobox) {
@@ -36,6 +42,17 @@ export default class DatatablePicklistField extends LightningElement {
         }
     }
     handleFocusout() {
+        if (this._editedValue !== this._value) {
+            this.dispatchEvent(new CustomEvent('inlineedit', {
+                detail: {
+                    value: this._editedValue,
+                    rowKeyValue: this.rowKeyValue,
+                    colKeyValue: this.colKeyValue
+                },
+                bubbles: true,
+                composed: true
+            }));
+        }
         this.editing=false;
     }
 
@@ -45,17 +62,7 @@ export default class DatatablePicklistField extends LightningElement {
     }
 
     handleChange(event) {
-        event.stopPropagation();
-        this.dispatchEvent(new CustomEvent('change', {
-            detail: {
-                value: event.detail.value,
-                rowKeyValue: this.rowKeyValue,
-                colKeyValue: this.colKeyValue
-            },
-            bubbles: true,
-            composed: true
-        }));
-        this.editing = false;
+        this._editedValue = event.detail.value;
         // this.template.focus();
     }
 
