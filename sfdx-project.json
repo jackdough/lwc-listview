@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "package": "lwc",
-            "versionNumber": "0.4.0.NEXT"
+            "versionNumber": "0.5.0.NEXT"
         }
     ],
     "namespace": "",
@@ -19,6 +19,8 @@
         "lwc@0.3.0-0": "04t6g000003hxs6AAA",
         "lwc@0.4.0-1": "04t6g000004Nw0mAAC",
         "lwc@0.4.0-2": "04t6g000004O0wPAAS",
-        "lwc@0.5.0-0": "04t6g000004O0wUAAS"
+        "lwc@0.5.0-0": "04t6g000004O0wUAAS",
+        "lwc@0.5.0-1": "04t6g000004O28tAAC",
+        "lwc@0.6.0-0": "04t6g000004OWs4AAG"
     }
 }

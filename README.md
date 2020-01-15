@@ -2,10 +2,10 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000004O28tAAC) version 0.5.0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000004OWs4AAG) version 0.6.0
 
 ## Release Notes
-### 0.5.0
+### 0.6.0
 - Picklist fields dropdown are auto populated, options will now override the default. Does not support RecordType dependent picklists.
 ### 0.4.0
 - Picklist fields! The options need to be manually set on the field JSON using the `options` property. Accepts an array of strings or `{label, value}` objects
