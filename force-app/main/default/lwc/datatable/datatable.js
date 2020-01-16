@@ -7,6 +7,7 @@ import { refreshApex } from '@salesforce/apex';
 import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
 import * as tableUtils from 'c/tableServiceUtils';
+import * as datatableUtils from './datatableUtils';
 
 // import getTableRequest from 'c/tableService';
 
@@ -133,36 +134,13 @@ export default class Datatable extends LightningElement {
   set fields(value) {
 
     if (value && typeof value == 'string') {
-      if (value.substring(0,1)==='[')  {
-        value = JSON.parse(value);
-      } else {
-        value = value.split(',')
-          .map(field => {
-            return {
-              fieldName: field.trim()
-            };
-          });
-      }
-    }  
-    else value = JSON.parse(JSON.stringify(value)); // Deep copy the object because LWC does not allow modifying API attributes THIS WILL NOT WORK IF THERE ARE ANY METHODS ON THE OBJECT
+      value = datatableUtils.createFieldArrayFromString(value);
+    } else {
+      value = JSON.parse(JSON.stringify(value)); // Deep copy the object because LWC does not allow modifying API attributes THIS WILL NOT WORK IF THERE ARE ANY METHODS ON THE OBJECT
+    }
+
     if (Array.isArray(value)) {
-      value.forEach(field => {
-        if (!field.fieldName) this.error('Field must have a valid `fieldName` property');
-        if (typeof field.visible === 'undefined') field.visible = true; // default true
-        else field.visible = !!field.visible; // convert to boolean
-        if (typeof field.sortable === 'undefined') field.sortable = true; // default true
-        else field.sortable = !!field.sortable; // convert to boolean
-        if (typeof field.editable === 'undefined') field.editable = (
-          field.fieldName === 'StageName' ||
-          !field.fieldName.endsWith('Name') // &&
-          // !field.fieldName.endsWith('Link') &&
-          // !field.fieldName.endsWith('Id')
-          ) && this.editable; // default to global setting
-        else field.editable = !!field.editable; // convert to boolean
-        if (field.options && Array.isArray(field.options) && field.options.every(opt=> typeof opt === 'string')) {
-          field.options = field.options.map(opt => {return {label: opt, value: opt}});
-        }
-      });
+      value = datatableUtils.addDefaultFieldValues(value, this.editable);
     } else {
       this.error('`fields` is required');
     }
@@ -220,7 +198,10 @@ export default class Datatable extends LightningElement {
     if (data) {
       this.data = tableUtils.applyLinks(tableUtils.flattenQueryResult(data.tableData));
       this._offset = this.data.length;
-      this.columns = this.addFieldMetadata(data.tableColumns);
+      
+      this._columns = datatableUtils.addFieldMetadata(data.tableColumns, this.fields);
+      this._columns = datatableUtils.addRowActions(this._columns, this.rowActions);
+
       if (this.datatable) this.datatable.selectedRows = this._selectedRows;
       this._enableInfiniteLoading = this.enableInfiniteLoading;
       this._isLoading = false;
@@ -239,10 +220,7 @@ export default class Datatable extends LightningElement {
 
   loadMoreData() {
     this.datatable.isLoading = true;
-    const recordsToLoad = (
-      (this.recordsPerBatch + this._offset) <= this.maxRecords ?
-        this.recordsPerBatch :
-        this.maxRecords - this._offset);
+    const recordsToLoad = datatableUtils.getNumberOfRecordsToLoad(this._offset,this.recordsPerBatch, this.maxRecords);
     return getTableCache({
       tableRequest: {
         queryString: this.query + ' LIMIT ' + recordsToLoad + ' OFFSET ' + this._offset
@@ -260,6 +238,7 @@ export default class Datatable extends LightningElement {
       throw err;
     });
   }
+
 
   get datatable() {
     return this.template.querySelector('lightning-datatable');
@@ -354,37 +333,6 @@ export default class Datatable extends LightningElement {
   //   renderActions(actions);
   // }
 
-  addFieldMetadata(columns) {
-    columns = JSON.parse(JSON.stringify(columns))
-      .map(col => {
-        let fieldName = col.fieldName;
-        if (fieldName.endsWith('Link')) { // special case for salesforce relationship fields (this will not work for custom relationships)
-          fieldName = fieldName.replace('_Link', '.Name');
-          fieldName = fieldName.replace('Link', 'Name')
-        }
-        let field = this.fields.find(f => (f.fieldName === fieldName));
-        if (field) { // copy values from fields list to columns list
-          col.sortable = field.sortable;
-          col.visible = field.visible;
-          col.editable = field.editable;
-          col.label = field.label || col.label;
-          col.typeAttributes = col.typeAttributes || {};
-          col.typeAttributes.editable = field.editable;
-          col.typeAttributes.options = field.options || col.options || [];
-        }
-        return col;
-      })
-      .filter(col => col.visible);
-    if (this.rowActions && this.rowActions.length || typeof this.rowActions === 'function') {
-      columns.push({
-        type: 'action',
-        typeAttributes: {
-          rowActions: this.rowActions
-        }
-      });
-    }
-    return columns;
-  }
 
   updateSortField(event) {
     let fieldName = event.detail.fieldName;
@@ -471,6 +419,7 @@ export default class Datatable extends LightningElement {
     }
   }
 
+  /*
   // based on https://stackoverflow.com/a/31536517
   createCsv(columns, rows) {
     const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
@@ -479,10 +428,11 @@ export default class Datatable extends LightningElement {
     csv.unshift(columns.map(col=>JSON.stringify(col.label)).join(','));
     csv = csv.join('\r\n');
   }
+  */
 
-  getPicklistOptions(fieldName) {
-    getPicklistValues()
-  }
+  // getPicklistOptions(fieldName) {
+  //   getPicklistValues()
+  // }
 
   // getAllRows() {
   //   // return Promise.resolve();
