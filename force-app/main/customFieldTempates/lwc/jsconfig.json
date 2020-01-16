@@ -3,31 +3,31 @@
         "baseUrl": ".",
         "paths": {
             "c/datatable": [
-                "datatable/datatable.js"
+                "../../default/lwc/datatable/datatable.js"
             ],
             "c/datatableBase": [
-                "datatableBase/datatableBase.js"
+                "../../default/lwc/datatableBase/datatableBase.js"
             ],
             "c/datatablePicklistField": [
-                "datatablePicklistField/datatablePicklistField.js"
+                "../../default/lwc/datatablePicklistField/datatablePicklistField.js"
             ],
             "c/fieldSelection": [
-                "fieldSelection/fieldSelection.js"
+                "../../default/lwc/fieldSelection/fieldSelection.js"
             ],
             "c/listView": [
-                "listView/listView.js"
+                "../../default/lwc/listView/listView.js"
             ],
             "c/listViewHeader": [
-                "listViewHeader/listViewHeader.js"
+                "../../default/lwc/listViewHeader/listViewHeader.js"
             ],
             "c/massActions": [
-                "massActions/massActions.js"
+                "../../default/lwc/massActions/massActions.js"
             ],
             "c/modal": [
-                "modal/modal.js"
+                "../../default/lwc/modal/modal.js"
             ],
             "c/relatedList": [
-                "relatedList/relatedList.js"
+                "../../default/lwc/relatedList/relatedList.js"
             ],
             "c/datatableImperativeExample": [
                 "../../lwc-utils/lwc/datatableImperativeExample/datatableImperativeExample.js"
@@ -41,16 +41,6 @@
             "c/tableServiceUtils": [
                 "../../lwc-utils/lwc/tableServiceUtils/tableServiceUtils.js"
             ]
-        },
-        "experimecustomFieldTemplate/customFieldTemplateWrapper.js
-    },
-    "include": [
-        "**/*",
-        "../../../../.sfdx/typings/lwc/**/*.d.ts", "../../customFieldTempates/lwc/customFieldTemplateWrapper"
-    ],
-    "typeAcquisition": {
-        "include": [
-            "jest"
-        ]
+        }
     }
 }

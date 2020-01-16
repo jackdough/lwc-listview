@@ -1,28 +1,16 @@
 <template>
-    <div class={editClass}>
-        <div class="slds-grid slds-grid_align-spread">
-            <span>{displayValue}</span>
-            <template if:true={editable}>
-                <lightning-button-icon
-                    class="slds-m-left_x-small edit-button"
-                    icon-class="slds-icon-text-default" 
-                    variant="bare"
-                    icon-name="utility:edit" 
-                    onclick={handleEdit}
-                    >
-                </lightning-button-icon
-                >
-            </template>
-        </div>
-    </div>
-    <div class="editor" if:true={editing}>
-        <lightning-combobox 
+    <c-custom-field-template-wrapper
+        editable={typeAttributes.editable}
+        row-key-value={rowKeyValue}
+        col-key-value={colKeyValue}
+        >
+        <span slot="display">{displayValue}</span>
+        <lightning-combobox slot="edit"
             name="picklist"
             variant="label-hidden"
             value={value}
             options={options}
-            onchange={handleChange}
-            onblur={handleFocusout}>
+            onchange={handleChange}>
         </lightning-combobox>
-    </div>
+    </c-custom-field-template-wrapper>
 </template>
