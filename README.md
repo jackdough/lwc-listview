@@ -1,4 +1,4 @@
-# SFDX App
+# LWC Listview
 
 _No warranty is provided, express or implied_
 
