@@ -1,6 +1,7 @@
 # LWC Listview
 
-![](https://github.com/shliachtx/lwc-listview/workflows/JS%20tests/badge.svg)
+![](https://github.com/shliachtx/lwc-listview/workflows/JS%20tests/badge.svg) [![codecov](https://codecov.io/gh/shliachtx/lwc-listview/branch/master/graph/badge.svg)](https://codecov.io/gh/shliachtx/lwc-listview)
+
 
 _No warranty is provided, express or implied_
 
