@@ -10,6 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: bahmutov/npm-install@v1
-    - name: Run JS tests
-    - run: yarn
-    - run: yarn test
+    - name: Install yarn
+      run: yarn
+    - name: ESLint
+      run: yarn lint:ci
+    - name: Jest
+      run: yarn test:ci
