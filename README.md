@@ -1,5 +1,7 @@
 # LWC Listview
 
+![](https://github.com/shliachtx/lwc-listview/workflows/CI/badge.svg)
+
 _No warranty is provided, express or implied_
 
 [Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000004OWs4AAG) version 0.6.0
