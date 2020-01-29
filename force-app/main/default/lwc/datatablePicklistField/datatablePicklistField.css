@@ -33,3 +33,7 @@
     border: 1px solid lightgray;
     padding: var(--lwc-spacingXxSmall);
 }
+
+lightning-combobox {
+    min-width: 100%;
+}
