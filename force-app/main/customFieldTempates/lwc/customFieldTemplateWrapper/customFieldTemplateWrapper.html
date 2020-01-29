@@ -1,7 +1,7 @@
 <template>
     <div class={editClass}>
         <div class="slds-grid slds-grid_align-spread">
-            {value}
+            <slot name="display"></slot>
             <template if:true={editable}>
                 <lightning-button-icon
                     class="slds-m-left_x-small edit-button"
@@ -14,5 +14,8 @@
                 >
             </template>
         </div>
+    </div>
+    <div class="editor" if:true={editing}>
+        <slot name="edit" onchange={handleChange} onfocusout={handleEditfinished}></slot>
     </div>
 </template>
