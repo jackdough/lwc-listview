@@ -3,7 +3,7 @@ name: JS tests
 on: [push]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -11,4 +11,6 @@ jobs:
     - uses: actions/checkout@v2
     - uses: bahmutov/npm-install@v1
     - name: Run JS tests
-      run: yarn test
+      run: |
+        yarn
+        yarn test
