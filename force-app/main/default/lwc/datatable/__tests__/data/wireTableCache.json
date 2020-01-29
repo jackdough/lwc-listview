@@ -1,56 +1,94 @@
 {
-    "recordCount": 5,
-    "tableData": [
-        {
-            "Id": "0031F00000JKhtRQAT",
-            "Name": "Jane Grey",
-            "AccountId": "0011F00000RcaIVQAZ",
-            "Account": {
-                "Name": "University of Arizona",
-                "Id": "0011F00000RcaIVQAZ"
-            }
-        },
-        {
-            "Id": "0031F00000JKhtTQAT",
-            "Name": "Ashley James",
-            "AccountId": "0011F00000RcaIWQAZ",
-            "Account": {
-                "Name": "United Oil & Gas, UK",
-                "Id": "0011F00000RcaIWQAZ"
-            }
-        },
-        {
-            "Id": "0031F00000JKhtVQAT",
-            "Name": "Liz D'Cruz",
-            "AccountId": "0011F00000RcaIXQAZ",
-            "Account": {
-                "Name": "United Oil & Gas, Singapore",
-                "Id": "0011F00000RcaIXQAZ"
-            }
-        }
-    ],
-    "tableColumns": [
-        {
-            "label": "Full Name",
-            "type": "url",
-            "fieldName": "Id",
-            "typeAttributes": {
-                "label": {
-                    "fieldName": "Name"
-                },
-                "target": "_parent"
-            }
-        },
-        {
-            "label": "Account Name",
-            "type": "url",
-            "fieldName": "Account_Id",
-            "typeAttributes": {
-                "label": {
-                    "fieldName": "Account_Name"
-                },
-                "target": "_parent"
-            }
-        }
-    ]
+  "tableData": [
+    {
+      "Id": "0063F00000IupIYQAZ",
+      "Name": "United Oil Emergency Generators",
+      "StageName": "option 2",
+      "CloseDate": "2019-10-22"
+    },
+    {
+      "Id": "0063F00000IupIQQAZ",
+      "Name": "United Oil Installations",
+      "StageName": "Closed Won",
+      "CloseDate": "2019-10-28"
+    },
+    {
+      "Id": "0063F00000IupINQAZ",
+      "Name": "United Oil Installations",
+      "StageName": "Negotiation/Review",
+      "CloseDate": "2019-10-29"
+    },
+    {
+      "Id": "0063F00000IupIAQAZ",
+      "Name": "United Oil Office Portable Generators",
+      "StageName": "Negotiation/Review",
+      "CloseDate": "2019-11-02"
+    },
+    {
+      "Id": "0063F00000IupIXQAZ",
+      "Name": "United Oil Installations",
+      "StageName": "Closed Won",
+      "CloseDate": "2019-11-09"
+    },
+    {
+      "Id": "0063F00000IupIcQAJ",
+      "Name": "United Oil Plant Standby Generators",
+      "StageName": "Needs Analysis",
+      "CloseDate": "2019-11-26"
+    },
+    {
+      "Id": "0063F00000IupISQAZ",
+      "Name": "United Oil Refinery Generators",
+      "StageName": "Closed Won",
+      "CloseDate": "2019-12-10"
+    },
+    {
+      "Id": "0063F00000IupIEQAZ",
+      "Name": "United Oil Refinery Generators",
+      "StageName": "Proposal/Price Quote",
+      "CloseDate": "2019-12-17"
+    },
+    {
+      "Id": "0063F00000IupIFQAZ",
+      "Name": "United Oil SLA",
+      "StageName": "Closed Won",
+      "CloseDate": "2019-12-24"
+    },
+    {
+      "Id": "0063F00000IupIaQAJ",
+      "Name": "United Oil Standby Generators",
+      "StageName": "Closed Won",
+      "CloseDate": "2019-12-25"
+    }
+  ],
+  "tableColumns": [
+    {
+      "label": "Name",
+      "type": "url",
+      "fieldName": "Link",
+      "typeAttributes": {
+        "label": { "fieldName": "Name" },
+        "target": "_parent"
+      }
+    },
+    {
+      "label": "Stage",
+      "type": "picklist",
+      "fieldName": "StageName",
+      "options": [
+        { "label": "Prospecting", "value": "Prospecting" },
+        { "label": "Qualification", "value": "Qualification" },
+        { "label": "Needs Analysis", "value": "Needs Analysis" },
+        { "label": "Value Proposition", "value": "Value Proposition" },
+        { "label": "Id. Decision Makers", "value": "Id. Decision Makers" },
+        { "label": "Perception Analysis", "value": "Perception Analysis" },
+        { "label": "Proposal/Price Quote", "value": "Proposal/Price Quote" },
+        { "label": "Negotiation/Review", "value": "Negotiation/Review" },
+        { "label": "Closed Won", "value": "Closed Won" },
+        { "label": "Closed Lost", "value": "Closed Lost" }
+      ]
+    },
+    { "label": "Close Date", "type": "date-local", "fieldName": "CloseDate" }
+  ],
+  "recordCount": 10
 }
