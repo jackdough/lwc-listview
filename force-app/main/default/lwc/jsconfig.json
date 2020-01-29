@@ -11,18 +11,6 @@
             "c/datatablePicklistField": [
                 "datatablePicklistField/datatablePicklistField.js"
             ],
-            "c/fieldSelection": [
-                "fieldSelection/fieldSelection.js"
-            ],
-            "c/listView": [
-                "listView/listView.js"
-            ],
-            "c/listViewHeader": [
-                "listViewHeader/listViewHeader.js"
-            ],
-            "c/massActions": [
-                "massActions/massActions.js"
-            ],
             "c/modal": [
                 "modal/modal.js"
             ],

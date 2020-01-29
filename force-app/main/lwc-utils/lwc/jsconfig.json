@@ -11,18 +11,6 @@
             "c/datatablePicklistField": [
                 "../../default/lwc/datatablePicklistField/datatablePicklistField.js"
             ],
-            "c/fieldSelection": [
-                "../../default/lwc/fieldSelection/fieldSelection.js"
-            ],
-            "c/listView": [
-                "../../default/lwc/listView/listView.js"
-            ],
-            "c/listViewHeader": [
-                "../../default/lwc/listViewHeader/listViewHeader.js"
-            ],
-            "c/massActions": [
-                "../../default/lwc/massActions/massActions.js"
-            ],
             "c/modal": [
                 "../../default/lwc/modal/modal.js"
             ],

@@ -10,6 +10,9 @@ import { getRecord } from 'lightning/uiRecordApi';
 const mockTableData = require('./data/wireTableCache.json');
 const mockObjectInfo = require('./data/getObjectInfo.json');
 
+const wireTableCacheWireAdapter = registerLdsTestWireAdapter(wireTableCache);
+const getObjectInfoAdapter = registerLdsTestWireAdapter(getObjectInfo);
+const getRecordAdapter = registerLdsTestWireAdapter(getRecord);
 
 jest.mock(
     '@salesforce/apex/DataTableService.getTableCache',
@@ -22,23 +25,27 @@ jest.mock(
 );
 
 describe('c-datatable', () => {
-    const wireTableCacheWireAdapter = registerLdsTestWireAdapter(wireTableCache);
-    const getObjectInfoAdapter = registerLdsTestWireAdapter(getObjectInfo);
-    const getRecordAdapter = registerLdsTestWireAdapter(getRecord);
+
     const defaultDatatable = () => {
         const element = createElement('c-datatable', {
             is: Datatable
         });
 
-        element.sObject = 'Contact';
+        element.sObject = 'Opportunity';
         element.sortedBy = 'Name';
         element.sortedDirection = 'asc';
         element.fields = [ 
             { fieldName: 'Name', sortable: true },
-            { fieldName: 'Account.Name', sortable: true }
+            { fieldName: 'StageName', sortable: true },
+            { fieldName: 'CloseDate', sortable: true }
         ];
 
         return element;
+    }
+
+    function flushPromises() {
+        // eslint-disable-next-line no-undef
+        return new Promise(resolve => setImmediate(resolve));
     }
 
     afterEach(() => {
@@ -59,7 +66,7 @@ describe('c-datatable', () => {
         ];
 
         document.body.appendChild(element);
-        const expectedQuery = 'SELECT Id,Name,Account.Name FROM Contact ORDER BY Name asc nulls first';
+        const expectedQuery = 'SELECT Id,Name,Account.Name FROM Opportunity ORDER BY Name asc nulls first';
         expect(element.query).toBe(expectedQuery);
 
         return Promise.resolve().then(() => {
@@ -78,7 +85,7 @@ describe('c-datatable', () => {
         ]);
 
         document.body.appendChild(element);
-        const expectedQuery = 'SELECT Id,Name,Account.Name FROM Contact ORDER BY Name asc nulls first';
+        const expectedQuery = 'SELECT Id,Name,Account.Name FROM Opportunity ORDER BY Name asc nulls first';
         expect(element.query).toBe(expectedQuery);
 
         return Promise.resolve().then(() => {
@@ -92,7 +99,7 @@ describe('c-datatable', () => {
         const element = defaultDatatable();
 
         document.body.appendChild(element);
-        const expectedQuery = 'SELECT Id,Name,Account.Name FROM Contact ORDER BY Name asc nulls first';
+        const expectedQuery = 'SELECT Id,Name,StageName,CloseDate FROM Opportunity ORDER BY Name asc nulls first';
         expect(element.query).toBe(expectedQuery);
 
         return Promise.resolve().then(() => {
@@ -108,7 +115,7 @@ describe('c-datatable', () => {
             is: Datatable
         });
 
-        element.sObject = 'Contact';
+        element.sObject = 'Opportunity';
         element.sortedDirection = 'asc';
         element.fields = [ 
             { fieldName: 'Name', sortable: true },
@@ -138,9 +145,10 @@ describe('c-datatable', () => {
 
         document.body.appendChild(element);
         wireTableCacheWireAdapter.emit(mockTableData);
+        getObjectInfoAdapter.emit(mockObjectInfo);
 
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             expect(lightningDatatable.columns[0].sortable).toBe(true);
         });
         
@@ -153,7 +161,7 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
 
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             expect(lightningDatatable).not.toBeNull();
             expect(lightningDatatable.sortedBy).toBe('Id');
             expect(lightningDatatable.sortedDirection).toBe('asc');
@@ -161,7 +169,7 @@ describe('c-datatable', () => {
         
     });
 
-    it('updates sort field when sort event is received from lightning-datatable', () => {
+    it('updates sort field when sort event is received from c-datatable-base', () => {
         const element = defaultDatatable();
 
         document.body.appendChild(element);
@@ -169,7 +177,7 @@ describe('c-datatable', () => {
 
         return Promise.resolve()
             .then(() => {
-                const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+                const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
                 expect(lightningDatatable).not.toBeNull();
                 lightningDatatable.dispatchEvent(new CustomEvent('sort', {
                     detail: {
@@ -181,7 +189,7 @@ describe('c-datatable', () => {
                 expect(element.sortedBy).toBe('Account.Name');
                 const request = wireTableCacheWireAdapter.getLastConfig().tableRequest;
                 expect(JSON.parse(request).queryString)
-                    .toMatch('SELECT Id,Name,Account.Name FROM Contact ORDER BY Account.Name desc nulls last');
+                    .toMatch('SELECT Id,Name,Account.Name FROM Opportunity ORDER BY Account.Name desc nulls last');
                 // const accountField = element.fields.find(field=>field.fieldName==='Account.Name');
                 // expect(accountField.sorted).toBe(true);
                 // expect(accountField.sortDirection).toBe('desc');
@@ -196,16 +204,18 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
         getTableCache.mockResolvedValue(mockTableData);
         
-        return Promise.resolve().then(() => {
+        return flushPromises().then(() => {
             const request = wireTableCacheWireAdapter.getLastConfig().tableRequest;
             expect(JSON.parse(request).queryString).toMatch(/LIMIT 50$/);
 
-            const datatable = element.shadowRoot.querySelector('lightning-datatable');
+            const datatable = element.shadowRoot.querySelector('c-datatable-base');
             datatable.dispatchEvent(new CustomEvent('loadmore'));
+        
             const imperativeRequest = getTableCache.mock.calls[0][0].tableRequest;
+            expect(imperativeRequest).toBe({});
             expect(imperativeRequest.queryString).toMatch(new RegExp('LIMIT 50 OFFSET '+mockTableData.tableData.length+'$'));
         }).then(() => {
-            const datatable = element.shadowRoot.querySelector('lightning-datatable');
+            const datatable = element.shadowRoot.querySelector('c-datatable-base');
             //IDK why this isnt working as expected: expect(datatable.enableInfiniteLoading).toBe(false); // if previous loadmore call returned less than requested, disable infinite loading
             datatable.dispatchEvent(new CustomEvent('loadmore'));
             const imperativeRequest = getTableCache.mock.calls[1][0].tableRequest;
@@ -228,11 +238,11 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
         getTableCache.mockResolvedValue(mockTableData);
         
-        return Promise.resolve().then(() => {
+        return flushPromises().then(() => {
             const request = wireTableCacheWireAdapter.getLastConfig().tableRequest;
-            expect(JSON.parse(request).queryString).toMatch(new RegExp('LIMIT '+ initialRecords + '$'));
+            expect(JSON.parse(request).queryString).toMatch(new RegExp('LIMIT '+ 20 + '$'));
 
-            const datatable = element.shadowRoot.querySelector('lightning-datatable');
+            const datatable = element.shadowRoot.querySelector('c-datatable-base');
             datatable.dispatchEvent(new CustomEvent('loadmore'));
             const imperativeRequest = getTableCache.mock.calls[0][0].tableRequest;
             expect(imperativeRequest.queryString).toMatch(new RegExp('LIMIT '+ recordsPerBatch+' OFFSET '+mockTableData.tableData.length+'$'));
@@ -251,7 +261,7 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
         getTableCache.mockResolvedValue(mockTableData);
         
-        return Promise.resolve().then(() => {
+        return flushPromises().then(() => {
             const request = wireTableCacheWireAdapter.getLastConfig().tableRequest;
             expect(JSON.parse(request).queryString).toMatch(new RegExp('LIMIT '+ recordsPerBatch + '$'));
         });
@@ -265,7 +275,7 @@ describe('c-datatable', () => {
         const idToHide = '0031F00000JKhtVQAT';
         return Promise.resolve()
             .then(() => {
-                const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+                const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
                 lightningDatatable.dispatchEvent(new CustomEvent('rowselection', {
                     detail: {
                         selectedRows: [
@@ -275,7 +285,7 @@ describe('c-datatable', () => {
                 }));
             }).then(() => {
                 const modifiedData = JSON.parse(JSON.stringify(mockTableData));
-                const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+                const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
 
                 modifiedData.tableData.pop();
                 wireTableCacheWireAdapter.emit(modifiedData);
@@ -285,13 +295,13 @@ describe('c-datatable', () => {
                     }
                 }));
             }).then(() => {
-                const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+                const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
                 expect(lightningDatatable.selectedRows).toContain(idToHide);
                 expect(element.selectedRows).toContain(idToHide);
             }).then(() => {
                 wireTableCacheWireAdapter.emit(mockTableData);
             }).then(() => {
-                const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+                const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
                 expect(lightningDatatable.selectedRows).toContain(idToHide);
                 expect(element.selectedRows).toContain(idToHide);
             });    
@@ -305,7 +315,7 @@ describe('c-datatable', () => {
         const idToHide = '0031F00000JKhtVQAT';
         return Promise.resolve()
             .then(() => {
-                const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+                const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
                 lightningDatatable.dispatchEvent(new CustomEvent('rowselection', {
                     detail: {
                         selectedRows: [
@@ -316,7 +326,7 @@ describe('c-datatable', () => {
             }).then(() => {
                 element.clearSelection();
             }).then(() => {
-                const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+                const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
                 expect(lightningDatatable.selectedRows).toHaveLength(0);
                 expect(element.selectedRows).toHaveLength(0);
             });
@@ -453,31 +463,31 @@ describe('c-datatable', () => {
 
         element.fields = [ 
             { fieldName: 'Name', sortable: true },
-            { fieldName: 'Account.Name', sortable: true, visible: false}
+            { fieldName: 'CloseDate', sortable: true, visible: false}
         ];
 
         document.body.appendChild(element);
         wireTableCacheWireAdapter.emit(mockTableData);
 
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             const request = JSON.parse(wireTableCacheWireAdapter.getLastConfig().tableRequest);
-            expect(request.queryString).toMatch('Account.Name');
+            expect(request.queryString).toMatch('CloseDate');
             expect(lightningDatatable.columns).not.toEqual(expect.arrayContaining([
-                expect.objectContaining({'fieldName': 'Account_Id'})
+                expect.objectContaining({'fieldName': 'CloseDate'})
             ]));
             element.fields = [ 
                 { fieldName: 'Name', sortable: true },
-                { fieldName: 'Account.Name', sortable: true }
+                { fieldName: 'CloseDate', sortable: true }
             ];
             wireTableCacheWireAdapter.emit(mockTableData);
         }).then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             const request = JSON.parse(wireTableCacheWireAdapter.getLastConfig().tableRequest);
             expect(lightningDatatable.columns).toEqual(expect.arrayContaining([
-                expect.objectContaining({'fieldName': 'Account_Id'})
+                expect.objectContaining({'fieldName': 'CloseDate'})
             ]));
-            expect(request.queryString).toMatch('Account.Name');
+            expect(request.queryString).toMatch('CloseDate');
         });
     });
 
@@ -493,7 +503,7 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
 
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             expect(lightningDatatable).not.toBeNull();
             expect(lightningDatatable.columns).toStrictEqual(
                 expect.arrayContaining([
@@ -521,7 +531,7 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
 
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             expect(lightningDatatable).not.toBeNull();
             expect(lightningDatatable.columns).toStrictEqual(
                 expect.arrayContaining([
@@ -545,7 +555,7 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
         
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             expect(lightningDatatable).not.toBeNull();
             lightningDatatable.dispatchEvent(new CustomEvent('rowaction', {
                 detail: {
@@ -574,7 +584,7 @@ describe('c-datatable', () => {
         wireTableCacheWireAdapter.emit(mockTableData);
         
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             expect(lightningDatatable).not.toBeNull();
             lightningDatatable.dispatchEvent(new CustomEvent('rowaction', {
                 detail: {
@@ -586,7 +596,7 @@ describe('c-datatable', () => {
                 }
             }));
         }).then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             
             expect(callback).toHaveBeenCalled();
             expect(callback.mock.calls[0][0]).toMatchObject(lightningDatatable.data[0]);
@@ -608,7 +618,7 @@ describe('c-datatable', () => {
 
         
         return Promise.resolve().then(() => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             const row = lightningDatatable.data[0];
             expect(lightningDatatable).not.toBeNull();
             lightningDatatable.dispatchEvent(new CustomEvent('rowaction', {
@@ -622,7 +632,7 @@ describe('c-datatable', () => {
             }));
             return row;
         }).then((row) => {
-            const lightningDatatable = element.shadowRoot.querySelector('lightning-datatable');
+            const lightningDatatable = element.shadowRoot.querySelector('c-datatable-base');
             
             expect(callback).toHaveBeenCalled();
             expect(callback.mock.calls[0][0]).toMatchObject(row);
@@ -664,7 +674,7 @@ describe('c-datatable', () => {
         const rowId = 'testid';
 
         return Promise.resolve().then(() => {
-            element.shadowRoot.querySelector('lightning-datatable').dispatchEvent(new CustomEvent('rowselection', {
+            element.shadowRoot.querySelector('c-datatable-base').dispatchEvent(new CustomEvent('rowselection', {
                 detail: {
                     selectedRows: [{Id:rowId}]
                 }

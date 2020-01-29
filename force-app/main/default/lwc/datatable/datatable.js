@@ -50,10 +50,6 @@ export default class Datatable extends LightningElement {
   @api showSoql;
 
 
-  set columns(value) {
-    this._columns = value;
-  }
-
   get sortedByFormatted() {
     let name = this._sortedBy
     if (name.endsWith('Name')) { // special case for salesforce relationship fields (this will not work for custom relationships)
@@ -220,7 +216,7 @@ export default class Datatable extends LightningElement {
     if (data) {
       this.data = tableUtils.applyLinks(tableUtils.flattenQueryResult(data.tableData));
       this._offset = this.data.length;
-      this.columns = this.addFieldMetadata(data.tableColumns);
+      this._columns = this.addFieldMetadata(data.tableColumns);
       if (this.datatable) this.datatable.selectedRows = this._selectedRows;
       this._enableInfiniteLoading = this.enableInfiniteLoading;
       this._isLoading = false;
@@ -262,7 +258,7 @@ export default class Datatable extends LightningElement {
   }
 
   get datatable() {
-    return this.template.querySelector('lightning-datatable');
+    return this.template.querySelector('c-datatable-base');
   }
 
   get tableRequest() {
