@@ -50,7 +50,7 @@ jobs:
 
   code_coverage:
     runs-on: ubuntu-latest
-    neeeds: [js_tests,apex_tests]
+    needs: [js_tests,apex_tests]
 
     steps:
     - name: Upload code coverage
