@@ -30,6 +30,9 @@ jobs:
 
   apex_tests:
     runs-on: ubuntu-latest
+    env:
+      sfdx_username: ${{ github.ref }}${{ secrets.SFDX_USERNAME }}.listview.ci
+
 
     steps:
     - uses: actions/checkout@v2
@@ -40,11 +43,8 @@ jobs:
           tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
           ./sfdx-cli/install
     - name: Populate auth file with SFDX_URL secret
-      shell: bash
       run: echo ${{ secrets.SFDX_JWT_KEY }} > ./server.key
     - name: Authenticate Dev Hub with JWT
-      env:
-        username: ${{ github.ref }}${{ secrets.SFDX_USERNAME }}.listview.ci
       run: |
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
         --jwtkeyfile ./server.key --username $username \
