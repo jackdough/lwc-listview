@@ -10,18 +10,23 @@ on:
       - master
 
 jobs:
-  test:
-
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - uses: bahmutov/npm-install@v1
-    - name: Install yarn
+    - name: Install package
       run: yarn
-    - name: ESLint
+  lint:
+    needs: build
+    steps:
+    - name: Run ESLint
       run: yarn lint:ci
-    - name: Jest
+  jest:
+    needs: build
+    steps:
+    - name: Run Jest tests
       run: yarn test:ci
     - name: Upload code coverage
       uses: codecov/codecov-action@v1
