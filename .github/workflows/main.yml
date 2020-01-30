@@ -44,7 +44,7 @@ jobs:
     - name: Push source
       run: sfdx force:source:push
     - name: Run Apex tests
-      run: sfdx force:apex:test:run --codecoverage --synchronous
+      run: sfdx force:apex:test:run --codecoverage --synchronous --resultformat=json --outputdir=coverage
     - name: Delete scratch org
       run: sfdx force:org:delete --targetusername=scratch-org --noprompt
 
