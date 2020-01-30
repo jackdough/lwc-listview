@@ -42,12 +42,11 @@ jobs:
           mkdir sfdx-cli
           tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
           ./sfdx-cli/install
-    - name: Populate auth file with SFDX_URL secret
-      run: echo ${{ secrets.SFDX_JWT_KEY }} > ./server.key
     - name: Authenticate Dev Hub with JWT
       run: |
+        echo ${{ secrets.SFDX_JWT_KEY }} > server.key
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
-        --jwtkeyfile ./server.key --username $username \
+        --jwtkeyfile server.key --username $username \
         --setdefaultdevhubusername
 
     - name: Create scratch org
