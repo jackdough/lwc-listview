@@ -39,9 +39,9 @@ jobs:
           mkdir sfdx-cli
           tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
           ./sfdx-cli/install
-    - name: Populate auth file with SFDX_URL secret
-      shell: bash
-      run: 'echo ${{ secrets.SFDX_JWT_KEY }} > ./server.key'
+    # - name: Populate auth file with SFDX_URL secret
+    #   shell: bash
+    #   run: 'echo ${{ secrets.SFDX_JWT_KEY }} > ./server.key'
     - name: Authenticate Dev Hub with JWT
       run: |
         echo github.head_ref
