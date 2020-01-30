@@ -43,7 +43,7 @@ jobs:
       shell: bash
       run: echo ${{ secrets.SFDX_JWT_KEY }} > ./server.key
     - name: Authenticate Dev Hub with JWT
-      with:
+      env:
         username: ${{ github.ref }}${{ secrets.SFDX_USERNAME }}.listview.ci
       run: |
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
