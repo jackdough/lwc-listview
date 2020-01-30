@@ -31,7 +31,7 @@ jobs:
   apex_tests:
     runs-on: ubuntu-latest
     env:
-      sfdx_username: ${{ github.ref }}${{ secrets.SFDX_USERNAME }}.listview.ci
+      scratch_username: ${{ github.ref }}${{ secrets.SFDX_USERNAME }}.listview.ci
 
 
     steps:
@@ -47,11 +47,11 @@ jobs:
     - name: Authenticate Dev Hub with JWT
       run: |
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
-        --jwtkeyfile ./server.key --username $username \
+        --jwtkeyfile ./server.key --username ${{ secrets.SFDX_USERNAME }} \
         --setdefaultdevhubusername
 
     - name: Create scratch org
-      run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
+      run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername --username=scratch_username
     - name: Push source
       run: sfdx force:source:push
     - name: Run Apex tests
