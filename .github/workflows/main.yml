@@ -49,8 +49,12 @@ jobs:
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
         --jwtkeyfile ./server.key --username ${{ secrets.SFDX_USERNAME }} \
         --setdefaultdevhubusername
-
+    - name: Get existing scratch org for this branch
+      run: sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
+        --jwtkeyfile ./server.key --username $scratch_username \
+        --instanceurl https://test.salesforce.com
     - name: Create scratch org
+      if: failure()
       run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername username=$scratch_username
     - name: Push source
       run: sfdx force:source:push
