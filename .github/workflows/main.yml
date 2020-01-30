@@ -22,6 +22,37 @@ jobs:
       run: yarn lint:ci
     - name: Run Jest tests
       run: yarn test:ci
+
+  apex_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Salesforce CLI
+      run: |
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+    - name: Populate auth file with SFDX_URL secret
+      shell: bash
+      run: 'echo ${{ secrets.DEV_HUB_SFDXURL}} > ./SFDX_URL_STORE.txt'
+    - name: Authenticate with devhub
+      run: sfdx force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=devhub --setdefaultdevhubusername 
+    - name: Create scratch org
+      run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
+    - name: Push source
+      run: sfdx force:source:push
+    - name: Run Apex tests
+      run: sfdx force:apex:test:run --codecoverage --synchronous
+    - name: Delete scratch org
+      run: sfdx force:org:delete --targetusername=scratch-org --noprompt
+
+  code_coverage:
+    runs-on: ubuntu-latest
+    neeeds: [js_tests,apex_tests]
+
+    steps:
     - name: Upload code coverage
       uses: codecov/codecov-action@v1
       with:
