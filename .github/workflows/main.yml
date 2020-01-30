@@ -10,9 +10,8 @@ on:
       - master
 
 jobs:
-  js_tests:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - uses: bahmutov/npm-install@v1
@@ -20,6 +19,14 @@ jobs:
       run: yarn
     - name: Run ESLint
       run: yarn lint:ci
+
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bahmutov/npm-install@v1
+    - name: Install package
+      run: yarn
     - name: Run Jest tests
       run: yarn test:ci
     - name: Upload code coverage
@@ -32,7 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       scratch_username: ${{ github.ref }}${{ secrets.SFDX_USERNAME }}.listview.ci
-
 
     steps:
     - uses: actions/checkout@v2
