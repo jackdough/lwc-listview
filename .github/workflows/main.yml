@@ -41,15 +41,21 @@ jobs:
           ./sfdx-cli/install
     - name: Populate auth file with SFDX_URL secret
       shell: bash
-      run: 'echo ${{ secrets.DEV_HUB_SFDXURL}} > ./SFDX_URL_STORE.txt'
-    - name: Authenticate with devhub
-      run: sfdx force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=devhub --setdefaultdevhubusername 
+      run: 'echo ${{ secrets.SFDX_JWT_KEY }} > ./server.key'
+    - name: Authenticate Dev Hub with JWT
+      run: |
+        echo github.head_ref
+        echo $github.ref
+        sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
+        --jwtkeyfile ./server.key --username ${{ secrets.SFDX_USERNAME }} \
+        --setdefaultdevhubusername
+
     - name: Create scratch org
       run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
     - name: Push source
       run: sfdx force:source:push
     - name: Run Apex tests
-      run: sfdx force:apex:test:run --codecoverage --synchronous --resultformat=json --outputdir=coverage
+      run: sfdx force:apex:test:run --codecoverage --synchronous --resultformat=human --outputdir=coverage
     - name: Delete scratch org
       run: sfdx force:org:delete --targetusername=scratch-org --noprompt
     - name: Upload code coverage
