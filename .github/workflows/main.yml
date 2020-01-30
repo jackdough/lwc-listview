@@ -44,8 +44,8 @@ jobs:
     #   run: 'echo ${{ secrets.SFDX_JWT_KEY }} > ./server.key'
     - name: Authenticate Dev Hub with JWT
       run: |
-        echo $github.head_ref
-        echo $github.ref
+        echo ${{ github.head_ref }}
+        echo ${{ github.ref }}
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
         --jwtkeyfile ./server.key --username ${{ secrets.SFDX_USERNAME }} \
         --setdefaultdevhubusername
