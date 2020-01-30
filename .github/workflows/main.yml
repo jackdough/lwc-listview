@@ -10,7 +10,7 @@ on:
       - master
 
 jobs:
-  build:
+  js_tests:
     runs-on: ubuntu-latest
 
     steps:
