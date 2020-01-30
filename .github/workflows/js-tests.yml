@@ -19,11 +19,14 @@ jobs:
     - name: Install package
       run: yarn
   lint:
+    runs-on: ubuntu-latest
+
     needs: build
     steps:
     - name: Run ESLint
       run: yarn lint:ci
   jest:
+    runs-on: ubuntu-latest
     needs: build
     steps:
     - name: Run Jest tests
