@@ -51,7 +51,7 @@ jobs:
         --setdefaultdevhubusername
 
     - name: Create scratch org
-      run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername --username=scratch_username
+      run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername username=$scratch_username
     - name: Push source
       run: sfdx force:source:push
     - name: Run Apex tests
