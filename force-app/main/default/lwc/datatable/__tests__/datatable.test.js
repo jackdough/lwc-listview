@@ -109,7 +109,7 @@ describe('c-datatable', () => {
         // expect('hi').toBe('hi');
     });
 
-    // test failing due to async tests. not sure how to solve this
+    // // test failing due to async tests. not sure how to solve this
     // it('throws an error if no field is sorted', (done) => {
     //     expect.assertions(1);
 
