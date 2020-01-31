@@ -53,20 +53,20 @@ jobs:
     - name: Authenticate Dev Hub with JWT
       run: |
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
-        --jwtkeyfile ./server.key --username ${{ secrets.SFDX_USERNAME }} \
-        --setdefaultdevhubusername
+          --jwtkeyfile ./server.key --username ${{ secrets.SFDX_USERNAME }} \
+          --setdefaultdevhubusername
     - name: Get existing scratch org for this branch or create a new one
-      run: \
+      run: |
         sfdx force:auth:jwt:grant --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
           --jwtkeyfile ./server.key --username $scratch_username \
           --instanceurl https://test.salesforce.com ||
-        sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername username=$scratch_username
+        sfdx force:org:create --definitionfile=config/project-scratch-def.json --setdefaultusername username=$scratch_username
     - name: Push source
-      run: sfdx force:source:push
+      run: sfdx force:source:push --targetusername $scratch_username
     - name: Run Apex tests
-      run: sfdx force:apex:test:run --codecoverage --synchronous --resultformat=human --outputdir=coverage
-    - name: Delete scratch org
-      run: sfdx force:org:delete --targetusername=scratch-org --noprompt
+      run: sfdx force:apex:test:run --codecoverage --synchronous --resultformat=human --outputdir=coverage --targetusername $scratch_username
+    # - name: Delete scratch org
+    #   run: sfdx force:org:delete --targetusername=scratch-org --noprompt
     - name: Upload code coverage
       uses: codecov/codecov-action@v1
       with:
