@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
             "c/datatable": [
@@ -29,12 +30,11 @@
             "c/tableServiceUtils": [
                 "../../lwc-utils/lwc/tableServiceUtils/tableServiceUtils.js"
             ]
-        },
-        "experimecustomFieldTemplate/customFieldTemplateWrapper.js
+        }
     },
     "include": [
         "**/*",
-        "../../../../.sfdx/typings/lwc/**/*.d.ts", "../../customFieldTempates/lwc/customFieldTemplateWrapper"
+        "../../../../.sfdx/typings/lwc/**/*.d.ts"
     ],
     "typeAcquisition": {
         "include": [
