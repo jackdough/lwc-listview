@@ -38,7 +38,7 @@ jobs:
   apex_tests:
     runs-on: ubuntu-latest
     env:
-      scratch_username: ${{ github.ref }}${{ secrets.SFDX_USERNAME }}.listview.ci
+      scratch_username: ${{ secrets.SFDX_USERNAME }}.listview.ci
 
     steps:
     - uses: actions/checkout@v2
@@ -62,7 +62,7 @@ jobs:
           --instanceurl https://test.salesforce.com ||
         sfdx force:org:create --definitionfile=config/project-scratch-def.json --setdefaultusername username=$scratch_username
     - name: Push source
-      run: sfdx force:source:push --targetusername $scratch_username
+      run: sfdx force:source:push --targetusername $scratch_username --forceoverwrite
     - name: Run Apex tests
       run: sfdx force:apex:test:run --codecoverage --synchronous --resultformat=human --outputdir=coverage --targetusername $scratch_username
     # - name: Delete scratch org
