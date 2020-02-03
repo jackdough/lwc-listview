@@ -57,13 +57,13 @@ jobs:
       run: |
         sfdx force:org:create \
           --definitionfile=config/project-scratch-def.json \
-          --setdefaultusername
+          --setdefaultusername \
           --setalias=scratch-org
     - name: Push source
       run: |
         sfdx force:source:push \
           --targetusername=scratch-org
-          --forceoverwrite \
+          --forceoverwrite
     - name: Run Apex tests
       run: |
         sfdx force:apex:test:run \
@@ -71,7 +71,7 @@ jobs:
           --codecoverage \
           --synchronous \
           --resultformat=human \
-          --outputdir=coverage \
+          --outputdir=coverage
     - name: Delete scratch org
       if: always()
       run: |
