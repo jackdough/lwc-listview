@@ -62,7 +62,7 @@ jobs:
     - name: Push source
       run: |
         sfdx force:source:push \
-          --targetusername=scratch-org
+          --targetusername=scratch-org \
           --forceoverwrite
     - name: Run Apex tests
       run: |
@@ -73,6 +73,7 @@ jobs:
           --resultformat=human \
           --outputdir=coverage
     - name: Delete scratch org
+      if: always()
       run: |
         sfdx force:org:delete \
           --targetusername=scratch-org \
