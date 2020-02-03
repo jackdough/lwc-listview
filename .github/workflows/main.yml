@@ -62,7 +62,7 @@ jobs:
     - name: Push source
       run: |
         sfdx force:source:push \
-          --targetusername=scratch-org
+          --targetusername=scratch-org \
           --forceoverwrite
     - name: Run Apex tests
       run: |
