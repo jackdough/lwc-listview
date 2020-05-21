@@ -177,6 +177,15 @@ export default class Datatable extends LightningElement {
     this._selectedRows = [];
   }
 
+  get datatableLoading() {
+    return this.datatable && this.datatable.isLoading;
+  }
+  set datatableLoading(value) {
+    if (this.datatable) {
+      this.datatable.isLoading = value;
+    }
+  }
+
   @wire(getObjectInfo, { objectApiName: '$sObject' })
   wiredObjectInfo({ error, data }) {
     if (data) {
@@ -215,7 +224,7 @@ export default class Datatable extends LightningElement {
   }
 
   loadMoreData() {
-    this.datatable.isLoading = true;
+    this.datatableLoading = true; 
     const recordsToLoad = datatableUtils.getNumberOfRecordsToLoad(this._offset,this.recordsPerBatch, this.maxRecords);
     return getTableCache({
       tableRequest: {
@@ -224,7 +233,7 @@ export default class Datatable extends LightningElement {
     }).then((data) => {
       data = tableUtils.applyLinks(tableUtils.flattenQueryResult(data.tableData));
       this.data = this.data.concat(data);
-      this.datatable.isLoading = false;
+      this.datatableLoading = false;
       this.datatable.selectedRows = this._selectedRows;
       this._offset += data.length;
       if (this._offset >= this.maxRecords || data.length < recordsToLoad) {

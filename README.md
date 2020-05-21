@@ -5,9 +5,11 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000004OWs4AAG) version 0.6.0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008fW6kAAE) version 0.7.0
 
 ## Release Notes
+### 0.7.0
+- Fix problem with infinite loading sometimes not working.
 ### 0.6.0
 - Picklist fields dropdown are auto populated, options will now override the default. Does not support RecordType dependent picklists.
 ### 0.4.0

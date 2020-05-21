@@ -4,10 +4,10 @@
             "path": "force-app",
             "default": true,
             "package": "lwc",
-            "versionNumber": "0.5.0.NEXT"
+            "versionNumber": "0.6.0.NEXT"
         }
     ],
-    "namespace": "",
+    "namespace": "easydt",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "47.0",
     "packageAliases": {
@@ -21,6 +21,7 @@
         "lwc@0.4.0-2": "04t6g000004O0wPAAS",
         "lwc@0.5.0-0": "04t6g000004O0wUAAS",
         "lwc@0.5.0-1": "04t6g000004O28tAAC",
-        "lwc@0.6.0-0": "04t6g000004OWs4AAG"
+        "lwc@0.6.0-0": "04t6g000004OWs4AAG",
+        "lwc@0.7.0-0": "04t6g000008fW6kAAE"
     }
 }

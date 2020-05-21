@@ -8,10 +8,11 @@ const addFieldMetadata = (columns, fieldOptions) => {
             }
             let field = fieldOptions.find(f => (f.fieldName === fieldName));
             if (field) { // copy values from fields list to columns list
-                col.sortable = field.sortable;
-                col.visible = field.visible;
-                col.editable = field.editable;
-                col.label = field.label || col.label;
+                // col.sortable = field.sortable;
+                // col.visible = field.visible;
+                // col.editable = field.editable;
+                // col.label = field.label || col.label;
+                Object.assign(col,field);
                 col.typeAttributes = col.typeAttributes || {};
                 col.typeAttributes.editable = field.editable;
                 col.typeAttributes.options = field.options || col.options || [];
