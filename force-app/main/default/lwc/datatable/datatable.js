@@ -11,9 +11,9 @@ import * as datatableUtils from "./datatableUtils";
 import {
   subscribe,
   unsubscribe,
-  onError,
-  setDebugFlag,
-  isEmpEnabled,
+  // onError,
+  // setDebugFlag,
+  // isEmpEnabled,
 } from "lightning/empApi";
 
 // import getTableRequest from 'c/tableService';
@@ -537,9 +537,12 @@ export default class Datatable extends LightningElement {
     const messageCallback = (response) => {
       console.log("New message received:", JSON.stringify(response));
       console.log(JSON.parse(JSON.stringify(response)));
-      if (this.lastEventId < response.data.event.replayId) {
-        const payload = response.data.payload;
-        const eventHeader = payload.ChangeEventHeader;
+      const payload = response.data.payload;
+      const eventHeader = payload.ChangeEventHeader;
+      if (
+        this.lastEventId < response.data.event.replayId &&
+        eventHeader.entityName === this.sObject
+      ) {
         switch (eventHeader.changeType) {
           case "CREATE":
             eventHeader.recordIds.map((recordId) =>
@@ -566,9 +569,9 @@ export default class Datatable extends LightningElement {
         JSON.stringify(response.channel)
       );
       if (this.subscription) {
-        unsubscribe(this.subscription, (repsonse) => {
-          console.log("unsubscribe() response: ", JSON.stringify(response));
-          console.log(JSON.parse(JSON.stringify(response)));
+        unsubscribe(this.subscription, (resp) => {
+          console.log("unsubscribe() response: ", JSON.stringify(resp));
+          console.log(JSON.parse(JSON.stringify(resp)));
         });
       }
       this.subscription = response;
