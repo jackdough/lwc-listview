@@ -8,6 +8,7 @@ import wireTableCache from '@salesforce/apex/DataTableService.wireTableCache';
 import getTableCache from '@salesforce/apex/DataTableService.getTableCache';
 import * as tableUtils from 'c/tableServiceUtils';
 import * as datatableUtils from './datatableUtils';
+import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
 
 // import getTableRequest from 'c/tableService';
 
@@ -21,10 +22,12 @@ export default class Datatable extends LightningElement {
    * See README.md
    ***/
   // _wiredResults;
+  lastEventId=0;
+  subscription;
   wiredResults;
-  _sObject;
-  _filter;
-  _search;
+  _sObject='';
+  _filter='';
+  _search='';
   _offset = 0;
   _maxRecords;
   _initialRecords;
@@ -33,7 +36,7 @@ export default class Datatable extends LightningElement {
   _tableRequest = '';
   objectInfo;
   @track _sortedDirection='asc';
-  @track _sortedBy;
+  @track _sortedBy = '';
   @track _enableInfiniteLoading;
   @track _selectedRows = [];
   @track _isLoading = true;
@@ -190,6 +193,14 @@ export default class Datatable extends LightningElement {
   wiredObjectInfo({ error, data }) {
     if (data) {
       this.objectInfo = data;
+      let channelName = `/data/${this.sObject}`;
+      if (this.objectInfo.custom) {
+        channelName = channelName.substring(0,channelName.length -1) + 'ChangeEvent';
+      } else {
+        channelName = channelName + 'ChangeEvent';
+      }
+
+      this.changeDataCaptureSubscribe(channelName);
     } else if (error) {
       this.error(error.statusText + ': ' + error.body.message);
     }
@@ -266,16 +277,20 @@ export default class Datatable extends LightningElement {
 
   @api
   get query() {
+    return this.buildQuery(this.fields, this.sObject, this.where, this.orderBy);
+  }
+
+  buildQuery(fields, sObject, where, orderBy) {
     let soql = 'SELECT ' + 
-      (this.fields.some(field => field.fieldName === 'Id') ? '' : 'Id,') + // include Id in query if is not defined
+      (fields.some(field => field.fieldName === 'Id') ? '' : 'Id,') + // include Id in query if is not defined
       // (this.fields.some(field => field.fieldName === 'RecordTypeId') ? '' : 'RecordTypeId,') + // include record type Id in query if is not defined
-      this.fields
+      fields
         // .filter(field => field.visible) // exclude fields set to not be visible
         // .filter(field => field.fieldName.includes('.') || !this.objectInfo && this.objectInfo.fields[field.fieldName]) // exclude fields that are not existent (does not check related fields)
         .map(field => field.fieldName).join(',') +
-      ' FROM ' + this.sObject +
-      this.where +
-      this.orderBy;
+      ' FROM ' + sObject +
+      where +
+      orderBy;
     return soql;
   }
 
@@ -357,15 +372,11 @@ export default class Datatable extends LightningElement {
       const row = JSON.parse(JSON.stringify(event.detail.row)); // deep copy so changes can be made that will not affect anything
       Promise.resolve(action.callback(row))
         .then((result)=> {
-          const rows = this.data;
-          const rowIndex = rows.findIndex(r=>r.Id === row.Id);
           if (result) {
-            rows[rowIndex] = result;
+            this.updateRow(row.Id);
           } else if (result === false) {
-            rows.splice(rowIndex,1);
-            this._offset--;
+            this.removeRow(row.Id);
           }
-          this.data = [...rows];
         });
     }
   }
@@ -424,6 +435,90 @@ export default class Datatable extends LightningElement {
     }
   }
 
+  getRowValue(recordId) {
+    let filter = this.where + (this.filter ? ' AND ': ' WHERE ') +  `Id='${recordId}'`;
+    let query = this.buildQuery(this.fields, this.sObject, filter, this.orderBy);
+    return getTableCache({
+      tableRequest: {
+        queryString: query
+      }
+    });
+
+  }
+
+  addRow(recordId) {    
+    if (this._offset < this.maxRecords) {
+      this.getRowValue(recordId).then((data) => {
+        const newData = tableUtils.applyLinks(tableUtils.flattenQueryResult(data.tableData));
+        
+        this.data = newData.concat(this.data);
+        
+        this.datatable.selectedRows = this._selectedRows;
+      });
+    }
+  }
+
+  updateRow(recordId) {
+    const rows = this.data;
+    const rowIndex = rows.findIndex(r=>r.Id === recordId);
+
+    if (rowIndex >= 0) { // if row exists
+      this.getRowValue(recordId).then((data) => {
+        const newData = tableUtils.applyLinks(tableUtils.flattenQueryResult(data.tableData));                        
+        rows[rowIndex] = newData[0];
+        
+        this.data = [...rows];
+      });
+    }
+  }
+
+  removeRow(recordId) {
+    const rows = this.data;
+    const rowIndex = rows.findIndex(r=>r.Id === recordId);
+
+    if (rowIndex >= 0) { // if row exists
+      rows.splice(rowIndex,1);
+      this._offset--;
+
+      this.data = [...rows];
+    }
+  }
+
+
+  changeDataCaptureSubscribe(channelName) {
+    const messageCallback = (response) => {
+      console.log('New message received:', JSON.stringify(response));
+      console.log(JSON.parse(JSON.stringify(response)));
+      if (this.lastEventId < response.data.event.replayId) {
+        const payload = response.data.payload;
+        const eventHeader = payload.ChangeEventHeader;
+        switch (eventHeader.changeType) {
+          case 'CREATE':
+            eventHeader.recordIds.map( (recordId) => this.addRow(recordId, payload) );
+            break;
+          case 'UPDATE':
+            eventHeader.recordIds.map( (recordId) => this.updateRow(recordId, payload) );
+            break;
+          case 'DELETE':
+            eventHeader.recordIds.map( (recordId) => this.removeRow(recordId) );
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    subscribe(channelName, -1, messageCallback).then((response) => {
+      console.log('Successfully subscribed to : ', JSON.stringify(response.channel));
+      if (this.subscription) {
+        unsubscribe(this.subscription, (repsonse) => {
+          console.log('unsubscribe() response: ', JSON.stringify(response));
+          console.log(JSON.parse(JSON.stringify(response)));
+        });
+      }
+      this.subscription = response;
+    });
+  }
   /*
   // based on https://stackoverflow.com/a/31536517
   createCsv(columns, rows) {
