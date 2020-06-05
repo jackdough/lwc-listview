@@ -13,7 +13,7 @@ import {
   unsubscribe,
   // onError,
   // setDebugFlag,
-  // isEmpEnabled,
+  isEmpEnabled,
 } from "lightning/empApi";
 
 // import getTableRequest from 'c/tableService';
@@ -59,6 +59,7 @@ export default class Datatable extends LightningElement {
   @api recordsPerBatch = 50;
   @api editable;
   @api showSoql;
+  @api enableLiveUpdates;
 
   get sortedByFormatted() {
     let name = this._sortedBy;
@@ -198,15 +199,18 @@ export default class Datatable extends LightningElement {
   wiredObjectInfo({ error, data }) {
     if (data) {
       this.objectInfo = data;
-      let channelName = `/data/${this.sObject}`;
-      if (this.objectInfo.custom) {
-        channelName =
-          channelName.substring(0, channelName.length - 1) + "ChangeEvent";
-      } else {
-        channelName = channelName + "ChangeEvent";
-      }
+      
+      if (isEmpEnabled && this.enableLiveUpdates) {
+        let channelName = `/data/${this.sObject}`;
+        if (this.objectInfo.custom) {
+          channelName =
+            channelName.substring(0, channelName.length - 1) + "ChangeEvent";
+        } else {
+          channelName = channelName + "ChangeEvent";
+        }
 
-      this.changeDataCaptureSubscribe(channelName);
+        this.changeDataCaptureSubscribe(channelName);
+      }
     } else if (error) {
       this.error(error.statusText + ": " + error.body.message);
     }
