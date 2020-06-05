@@ -56,6 +56,7 @@ Name | Type |Read only | Required | Description | Default value
 `enable-infinite-loading`|boolean|||automatically load more records when user reaches the end of the datatable|`false`
 `records-per-batch`|integer|||number of records to load when the end of the datable is reached|`50`
 `initial-records`|integer|||number of records to load initially|`this.recordsPerBatch`
+`enableLiveUpdates`|boolean|||update records using Change Data Capture|`false`
 `selected-rows`|array|✔||array of selected IDs from datatable
 `query`|string|✔||generated query string used to retrieve data
 `record-count`|integer|✔||total number of records returned by current query

@@ -5,9 +5,11 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008fW6kAAE) version 0.7.0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008SZyYAAW) version 0.8.0
 
 ## Release Notes
+### 0.8.0
+- Add support for Change Data Capture.
 ### 0.7.0
 - Fix problem with infinite loading sometimes not working.
 ### 0.6.0
@@ -38,6 +40,10 @@ To deploy authorize a dev hub in sfdx and run `$ sfdx force:org:create -f config
 
 ### [datatable](force-app/main/default/lwc/datatable)
 Takes as input an sObject and an array of fields and populates a datatable with records from the database.
+
+To enable Change Data Capture (live updates) follow instructions here: https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_select_objects.htm
+
+Note: Normal Change Data Capture limitations apply https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_allocations.htm
 
 ### [Custom Related List](force-app/main/default/lwc/relatedList)
 Related list for use on lightning app and record pages. Choose object, fields, etc.
