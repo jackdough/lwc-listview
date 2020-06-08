@@ -227,4 +227,33 @@ public with sharing class DataTableService {
     return tableColumns;
   }
 
+  @AuraEnabled
+  public static String getPushTopic(String sObjectApiName) {
+      String name = 'easydt__'+sObjectApiName;
+      String query = 'SELECT Id FROM ' + sObjectApiName;
+      PushTopic pt;
+      PushTopic[] pushTopics = [SELECT Id,Name,IsActive FROM PushTopic WHERE Name=:name LIMIT 1];
+      if (pushTopics.size() > 0) {
+        pt = pushTopics[0];
+
+        if (!pt.IsActive) {
+          pt.IsActive = true;
+          update pt;
+        }
+      } else {
+        pt = new PushTopic();
+        pt.Name=name;
+        pt.ApiVersion=48;
+        pt.NotifyForOperationCreate=true;
+        pt.NotifyForOperationUpdate=true;
+        pt.NotifyForOperationDelete=true;
+        pt.NotifyForFields='All';
+        pt.Query=query;
+        
+        insert pt;
+      }
+
+      return '/topic/' + pt.Name;
+  }
+
 }

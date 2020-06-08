@@ -6,6 +6,7 @@ import { updateRecord } from "lightning/uiRecordApi";
 import { refreshApex } from "@salesforce/apex";
 import wireTableCache from "@salesforce/apex/DataTableService.wireTableCache";
 import getTableCache from "@salesforce/apex/DataTableService.getTableCache";
+import getPushTopic from "@salesforce/apex/DataTableService.getPushTopic";
 import * as tableUtils from "c/tableServiceUtils";
 import * as datatableUtils from "./datatableUtils";
 import {
@@ -28,7 +29,7 @@ export default class Datatable extends LightningElement {
    * See README.md
    ***/
   // _wiredResults;
-  lastEventId = 0;
+  lastEventId = -1;
   subscription;
   wiredResults;
   _sObject = "";
@@ -59,7 +60,15 @@ export default class Datatable extends LightningElement {
   @api recordsPerBatch = 50;
   @api editable;
   @api showSoql;
-  @api enableLiveUpdates;
+  @api 
+  get enableLiveUpdates() {
+    return this._enableLiveUpdates;
+  }
+  set enableLiveUpdates(value) {
+    this._enableLiveUpdates = value;
+    // eslint-disable-next-line no-self-assign
+    this.sObject = this.sObject;
+  }
 
   get sortedByFormatted() {
     let name = this._sortedBy;
@@ -120,6 +129,17 @@ export default class Datatable extends LightningElement {
   }
   set sObject(value) {
     this._sObject = value;
+    if (this.enableLiveUpdates) {
+      getPushTopic({ sObjectApiName: value })
+        .then( (channelName) => {
+          this.channelName = channelName
+          if (true) { //isEmpEnabled
+            return this.pushTopicSubscribe(channelName) 
+          } 
+          return undefined;
+        });
+    }
+
     this.tableRequest = "reset";
   }
   @api // filter;
@@ -199,18 +219,6 @@ export default class Datatable extends LightningElement {
   wiredObjectInfo({ error, data }) {
     if (data) {
       this.objectInfo = data;
-      
-      if (isEmpEnabled && this.enableLiveUpdates) {
-        let channelName = `/data/${this.sObject}`;
-        if (this.objectInfo.custom) {
-          channelName =
-            channelName.substring(0, channelName.length - 1) + "ChangeEvent";
-        } else {
-          channelName = channelName + "ChangeEvent";
-        }
-
-        this.changeDataCaptureSubscribe(channelName);
-      }
     } else if (error) {
       this.error(error.statusText + ": " + error.body.message);
     }
@@ -327,42 +335,39 @@ export default class Datatable extends LightningElement {
   }
 
   get where() {
-    let filter = this.filter;
-    let search;
-    if (this.search) {
-      let searchTerm = this.search.replace("'", "\\'");
-      search = this.fields
-        .filter((field) => {
-          if (Object.prototype.hasOwnProperty.call(field, "searchable")) {
-            return field.searchable;
-          }
-          if (!this.objectInfo || !this.objectInfo.fields[field.fieldName]) {
-            return false;
-          }
-          let fieldType = this.objectInfo.fields[field.fieldName].dataType;
-          return (
-            fieldType === "String" ||
-            fieldType === "Email" ||
-            fieldType === "Phone"
-          );
-        })
-        .map((field) => {
-          return field.fieldName + " LIKE '%" + searchTerm + "%'";
-        })
-        .join(" OR ");
-      if (search) {
-        search = "(" + search + ")";
-      }
-    }
-    if (filter && search) {
-      filter += " AND " + search;
-    } else if (search) {
-      filter = search;
-    }
-    if (filter) {
-      return " WHERE " + filter;
+    let filterItems = [this.filter, this.searchQuery].filter(f => f);
+    
+    if (filterItems.length) {
+      return " WHERE " + filterItems.join(' AND ');
     }
     return "";
+  }
+
+  get searchQuery() {
+    let searchTerm = this.search.replace("'", "\\'");
+    let search = this.fields
+      .filter((field) => {
+        if (Object.prototype.hasOwnProperty.call(field, "searchable")) {
+          return field.searchable;
+        }
+        if (!this.objectInfo || !this.objectInfo.fields[field.fieldName]) {
+          return false;
+        }
+        let fieldType = this.objectInfo.fields[field.fieldName].dataType;
+        return (
+          fieldType === "String" ||
+          fieldType === "Email" ||
+          fieldType === "Phone"
+        );
+      })
+      .map((field) => {
+        return field.fieldName + " LIKE '%" + searchTerm + "%'";
+      })
+      .join(" OR ");
+    if (search) {
+      search = "(" + search + ")";
+    }
+    return search;
   }
 
   get orderBy() {
@@ -479,7 +484,7 @@ export default class Datatable extends LightningElement {
 
   getRowValue(recordId) {
     let filter =
-      this.where + (this.filter ? " AND " : " WHERE ") + `Id='${recordId}'`;
+      this.where + (this.where ? " AND " : " WHERE ") + `Id='${recordId}'`;
     let query = this.buildQuery(
       this.fields,
       this.sObject,
@@ -537,29 +542,21 @@ export default class Datatable extends LightningElement {
     }
   }
 
-  changeDataCaptureSubscribe(channelName) {
+  pushTopicSubscribe(channelName) {
     const messageCallback = (response) => {
-      console.log("New message received:", JSON.stringify(response));
       console.log(JSON.parse(JSON.stringify(response)));
-      const payload = response.data.payload;
-      const eventHeader = payload.ChangeEventHeader;
-      if (
-        this.lastEventId < response.data.event.replayId &&
-        eventHeader.entityName === this.sObject
-      ) {
-        switch (eventHeader.changeType) {
-          case "CREATE":
-            eventHeader.recordIds.map((recordId) =>
-              this.addRow(recordId, payload)
-            );
+      const event = response.data.event;
+      const recordId = response.data.sobject.Id;
+      if (this.lastEventId < event.replayId) {
+        switch (event.type) {
+          case "created":
+            this.addRow(recordId);
             break;
-          case "UPDATE":
-            eventHeader.recordIds.map((recordId) =>
-              this.updateRow(recordId, payload)
-            );
+          case "updated":
+            this.updateRow(recordId);
             break;
-          case "DELETE":
-            eventHeader.recordIds.map((recordId) => this.removeRow(recordId));
+          case "deleted":
+            this.removeRow(recordId);
             break;
           default:
             break;
@@ -567,14 +564,13 @@ export default class Datatable extends LightningElement {
       }
     };
 
-    subscribe(channelName, -1, messageCallback).then((response) => {
+    return subscribe(channelName, -1, messageCallback).then((response) => {
       console.log(
         "Successfully subscribed to : ",
         JSON.stringify(response.channel)
       );
       if (this.subscription) {
         unsubscribe(this.subscription, (resp) => {
-          console.log("unsubscribe() response: ", JSON.stringify(resp));
           console.log(JSON.parse(JSON.stringify(resp)));
         });
       }
