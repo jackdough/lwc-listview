@@ -5,10 +5,10 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008SZzRAAW) version 0.9.0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008SZzWAAW) version 0.10.0
 
 ## Release Notes
-### 0.9.0
+### 0.10.0
 - Change live data updates to use PushTopic
 ### 0.8.0
 - Add support for Change Data Capture.

@@ -73,7 +73,7 @@ export default class RelatedList extends LightningElement {
   }
 
   get parentRelationship() {
-    if (this.childRecordField && typeof this.parentRecordField !== undefined) {
+    if (this.childRecordField && typeof this.parentRecordId !== undefined) {
       return `${this.childRecordField}='${this.parentRecordId}'`;
     }
     return "";
