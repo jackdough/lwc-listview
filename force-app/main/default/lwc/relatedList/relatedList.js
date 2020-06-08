@@ -64,17 +64,17 @@ export default class RelatedList extends LightningElement {
   }
 
   get parentRecordId() {
-    if (this.parentRecordField && this.parentRecord && this.parentRecord.data)
+    if (!this.parentRecordField) { 
+      return undefined;
+    } else if (this.parentRecord && this.parentRecord.data) {
       return getFieldValue(this.parentRecord.data, this.fullParentRecordField);
+    }
     return "";
   }
 
   get parentRelationship() {
-    if (this.parentRecordField && this.childRecordField) {
-      if (this.parentRecordId) {
-        return " " + this.childRecordField + " = '" + this.parentRecordId + "'";
-      }
-      return " " + this.childRecordField + " = ''"; // return empty string so the query returns no results
+    if (this.childRecordField && typeof this.parentRecordId !== undefined) {
+      return `${this.childRecordField}='${this.parentRecordId}'`;
     }
     return "";
   }
