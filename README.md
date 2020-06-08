@@ -5,9 +5,11 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008SZyYAAW) version 0.8.0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008SZzRAAW) version 0.9.0
 
 ## Release Notes
+### 0.9.0
+- Change live data updates to use PushTopic
 ### 0.8.0
 - Add support for Change Data Capture.
 ### 0.7.0
@@ -41,9 +43,7 @@ To deploy authorize a dev hub in sfdx and run `$ sfdx force:org:create -f config
 ### [datatable](force-app/main/default/lwc/datatable)
 Takes as input an sObject and an array of fields and populates a datatable with records from the database.
 
-To enable Change Data Capture (live updates) follow instructions here: https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_select_objects.htm
-
-Note: Normal Change Data Capture limitations apply https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_allocations.htm
+Note: Streaming update support utilizes the PushTopic feature, which has a maximum of 50 PushTopic records per org. The datatable uses one for each object type that has live updates enabled. They can be deleted or deactivated if necessary - use `SELECT Id, IsActive FROM PushTopic WHERE Name LIKE 'easydt__%` to retrieve them via SOQL.
 
 ### [Custom Related List](force-app/main/default/lwc/relatedList)
 Related list for use on lightning app and record pages. Choose object, fields, etc.
