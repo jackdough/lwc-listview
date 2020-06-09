@@ -445,6 +445,14 @@ export default class Datatable extends LightningElement {
 
   handleSave(event) {
     let updatePromises = event.detail.draftValues.map((row) => {
+      row = {...row};
+      for (let key of Object.keys(row)) {
+        let fieldInfo = this._fields.find(f => f.fieldName === key);
+        if (fieldInfo && fieldInfo.editFieldName) {
+          row[fieldInfo.editFieldName] = row[key];
+          delete row[key]; 
+        }
+      }
       // let recordForUpdate = generateRecordInputForUpdate({id: row.Id, fields:row},this.objectInfo);
       return updateRecord({ fields: row });
     });

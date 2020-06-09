@@ -72,6 +72,7 @@ const addDefaultFieldValues = (fields, editable) => {
 
         if (typeof field.editable === 'undefined') {
             field.editable = (
+          !!field.editFieldName || // if editFieldName is set, assume field is editable
           field.fieldName === 'StageName' ||
           !field.fieldName.endsWith('Name') // &&
           // !field.fieldName.endsWith('Link') &&
