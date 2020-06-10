@@ -22,10 +22,10 @@
             <property label="Show new record button"  name="showAddButton" type="Boolean"></property>
             <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean" default="true"></property>
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
+            <property label="Live updates" name="enableLiveUpdates" description="Note: Streaming update support utilizes the PushTopic feature, which has a maximum of 50 PushTopic records per org. The datatable uses one for each object type that has live updates enabled. They can be deleted or deactivated if necessary - use `SELECT Id, IsActive FROM PushTopic WHERE Name LIKE 'easydt__%` to retrieve them via SOQL." type="Boolean" default="true"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
             <property label="Initial records" description="Number of records to load in the first batch" name="initialRecords" type="Integer"></property>
             <property label="Height" name="height" description="Set a fixed height (in pixels) for the table. If infinite loading is enabled, this is necessary to prevent the table from loading endlessly." type="Integer" default="300"></property>
-            <property label="Live updates" name="enableLiveUpdates" description="Update the datatable using Change Data Capture. Object data streaming must be enabled: https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_select_objects.htm" type="Boolean" default="true"></property>
             <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
             <supportedFormFactors>
                 <supportedFormFactor type="Large"></supportedFormFactor>
@@ -46,10 +46,10 @@
             <property label="Show new record button"  name="showAddButton" type="Boolean"></property>
             <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean"></property>
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
+            <property label="Live updates" name="enableLiveUpdates" description="Note: Streaming update support utilizes the PushTopic feature, which has a maximum of 50 PushTopic records per org. The datatable uses one for each object type that has live updates enabled. They can be deleted or deactivated if necessary - use `SELECT Id, IsActive FROM PushTopic WHERE Name LIKE 'easydt__%` to retrieve them via SOQL." type="Boolean" default="true"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
             <property label="Initial records" description="Number of records to load initially" name="initialRecords" type="Integer"></property>
             <property label="Height" name="height" description="Set a fixed height (in pixels) for the table. If infinite loading is enabled, this is necessary to prevent the table from loading endlessly." type="Integer" default="300"></property>
-            <property label="Live updates" name="enableLiveUpdates" description="Update the datatable using Change Data Capture. Object data streaming must be enabled: https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_select_objects.htm" type="Boolean" default="true"></property>
             <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
             <supportedFormFactors>
                 <supportedFormFactor type="Large"></supportedFormFactor>
