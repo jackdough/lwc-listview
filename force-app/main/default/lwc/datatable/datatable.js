@@ -43,6 +43,9 @@ export default class Datatable extends LightningElement {
   _recordCount;
   _tableRequest = "";
   objectInfo;
+  @track errors = {
+    rows:{}
+  };
   @track _sortedDirection = "asc";
   @track _sortedBy = "";
   @track _enableInfiniteLoading;
@@ -418,8 +421,10 @@ export default class Datatable extends LightningElement {
       const row = JSON.parse(JSON.stringify(event.detail.row)); // deep copy so changes can be made that will not affect anything
       Promise.resolve(action.callback(row)).then((result) => {
         if (result) {
-          this.updateRow(row.Id);
-        } else if (result === false) {
+          this.refreshRow(row.Id);
+        // eslint-disable-next-line no-empty
+        } else if (typeof result === 'undefined') {
+        } else {
           this.removeRow(row.Id);
         }
       });
@@ -448,7 +453,7 @@ export default class Datatable extends LightningElement {
   handleSave(event) {
     let updatePromises = event.detail.draftValues.map((row) => {
       row = {...row};
-      for (let key of Object.keys(row)) {
+      for (let key of Object.keys(row)) { // Replace fieldName with editFieldName before performing the update
         let fieldInfo = this._fields.find(f => f.fieldName === key);
         if (fieldInfo && fieldInfo.editFieldName) {
           row[fieldInfo.editFieldName] = row[key];
@@ -456,22 +461,47 @@ export default class Datatable extends LightningElement {
         }
       }
       // let recordForUpdate = generateRecordInputForUpdate({id: row.Id, fields:row},this.objectInfo);
-      return updateRecord({ fields: row });
+      return updateRecord({ fields: row })
+        .then(() => {
+          return this.refreshRow(row.Id);
+        })
+        .catch((error) => {
+          if (!error || !error.body || !error.body.output) {
+            return;
+          }
+          const formatError = err => err && err.errorCode + ': ' + err.message
+          const rowErrorMessages = (error.body.output.errors && error.body.output.errors.map(formatError)) || [];
+          const fieldErrors = Object.values(error.body.output.fieldErrors).reduce((acc,current) => acc.concat(current), []);
+          const fieldErrorMessages = (fieldErrors && fieldErrors.map(formatError)) || [];
+          const messages = [...rowErrorMessages, ...fieldErrorMessages];
+          const fieldNames = (fieldErrors && fieldErrors.map(err =>  {
+            let fieldInfo = this._fields.find(f => f.editFieldName === err.field); // lookup the original field name
+            return (fieldInfo && fieldInfo.fieldName) || err.field;
+          })) || [];
+          this.errors.rows[row.Id] = {
+            title: `We found ${messages.length} error${messages.length > 1 ? 's':''}.`,
+            messages,
+            fieldNames
+          }
+        });
     });
 
     Promise.all(updatePromises)
-      .then(() => {
-        this.draftValues = [];
-        this.refresh();
-      })
+      // .then(() => {
+      //   this.draftValues = [];
+      //   this.refresh();
+      // })
       .catch((error) => {
-        this.dispatchEvent(
-          new ShowToastEvent({
+        if (error && error.body) {
+          this.errors.table = {
             title: "Error updating records",
-            message: error.body.message,
-            variant: "error",
-          })
-        );
+            message: [error.body.message],
+          }
+          console.log(JSON.parse(JSON.stringify(error)));
+        }
+      })
+      .then(()=> {
+        this.errors = {...this.errors}
       });
     console.log(event);
   }
@@ -522,7 +552,7 @@ export default class Datatable extends LightningElement {
           rows[rowIndex] = newData[0];
           this.data = [...rows];
         } else {
-        this.data = newData.concat(this.data);
+          this.data = newData.concat(this.data);
         }
 
         this.datatable.selectedRows = this._selectedRows;
@@ -530,7 +560,7 @@ export default class Datatable extends LightningElement {
     }
   }
 
-  updateRow(recordId) {
+  refreshRow(recordId) {
     const rows = this.data;
     const rowIndex = rows.findIndex((r) => r.Id === recordId);
 
@@ -571,7 +601,7 @@ export default class Datatable extends LightningElement {
             this.addRow(recordId);
             break;
           case "updated":
-            this.updateRow(recordId);
+            this.refreshRow(recordId);
             break;
           case "deleted":
             this.removeRow(recordId);
