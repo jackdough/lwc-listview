@@ -30,6 +30,7 @@ export default class Datatable extends LightningElement {
    ***/
   // _wiredResults;
   lastEventId = -1;
+  lastRefreshTime = -1;
   subscription;
   wiredResults;
   _sObject = "";
@@ -230,6 +231,7 @@ export default class Datatable extends LightningElement {
     let error, data;
     ({ error, data } = result);
     if (data) {
+      this.lastRefreshTime = new Date().getTime();
       this.data = tableUtils.applyLinks(
         tableUtils.flattenQueryResult(data.tableData)
       );
@@ -513,7 +515,15 @@ export default class Datatable extends LightningElement {
           tableUtils.flattenQueryResult(data.tableData)
         );
 
+        const rows = this.data;
+        const rowIndex = rows.findIndex((r) => r.Id === recordId);
+            
+        if (rowIndex >= 0) { // Check if row already exists
+          rows[rowIndex] = newData[0];
+          this.data = [...rows];
+        } else {
         this.data = newData.concat(this.data);
+        }
 
         this.datatable.selectedRows = this._selectedRows;
       });
@@ -555,7 +565,7 @@ export default class Datatable extends LightningElement {
       console.log(JSON.parse(JSON.stringify(response)));
       const event = response.data.event;
       const recordId = response.data.sobject.Id;
-      if (this.lastEventId < event.replayId) {
+      if (this.lastEventId < event.replayId && this.lastRefreshTime < new Date(event.createdDate).getTime()) {
         switch (event.type) {
           case "created":
             this.addRow(recordId);
