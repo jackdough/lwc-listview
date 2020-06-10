@@ -41,6 +41,7 @@ export default class RelatedList extends LightningElement {
   @api editable;
   @api height;
   @api enableLiveUpdates;
+  @api iconName;
 
   _parentRecordField;
   _childRecordField;
