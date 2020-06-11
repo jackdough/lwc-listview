@@ -462,9 +462,6 @@ export default class Datatable extends LightningElement {
       }
       // let recordForUpdate = generateRecordInputForUpdate({id: row.Id, fields:row},this.objectInfo);
       return updateRecord({ fields: row })
-        .then(() => {
-          return this.refreshRow(row.Id);
-        })
         .catch((error) => {
           if (!error || !error.body || !error.body.output) {
             return;
@@ -483,6 +480,10 @@ export default class Datatable extends LightningElement {
             messages,
             fieldNames
           }
+        })
+        .then(() => {
+          delete this.errors.rows[row.Id];
+          return this.refreshRow(row.Id);
         });
     });
 
