@@ -14,7 +14,7 @@ import {
   unsubscribe,
   // onError,
   // setDebugFlag,
-  isEmpEnabled,
+  // isEmpEnabled,
 } from "lightning/empApi";
 
 // import getTableRequest from 'c/tableService';
@@ -137,10 +137,10 @@ export default class Datatable extends LightningElement {
       getPushTopic({ sObjectApiName: value })
         .then( (channelName) => {
           this.channelName = channelName
-          if (true) { //isEmpEnabled
+          // if (isEmpEnabled) { 
             return this.pushTopicSubscribe(channelName) 
-          } 
-          return undefined;
+          // } 
+          // return undefined;
         });
     }
 
@@ -421,7 +421,7 @@ export default class Datatable extends LightningElement {
       const row = JSON.parse(JSON.stringify(event.detail.row)); // deep copy so changes can be made that will not affect anything
       Promise.resolve(action.callback(row)).then((result) => {
         if (result) {
-          this.refreshRow(row.Id);
+          this.replaceRow(row.Id, result);
         // eslint-disable-next-line no-empty
         } else if (typeof result === 'undefined') {
         } else {
@@ -557,6 +557,15 @@ export default class Datatable extends LightningElement {
 
         this.datatable.selectedRows = this._selectedRows;
       });
+    }
+  }
+
+  replaceRow(recordId, row) {
+    const rows = this.data;
+    const rowIndex = rows.findIndex((r) => r.Id === recordId);
+    if (rowIndex >= 0) {
+      rows[rowIndex] = row;
+      this.data = [...rows];
     }
   }
 
