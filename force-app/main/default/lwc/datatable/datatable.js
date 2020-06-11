@@ -51,6 +51,7 @@ export default class Datatable extends LightningElement {
   @track _enableInfiniteLoading;
   @track _selectedRows = [];
   @track _isLoading = true;
+  @track isLoadingMore = false;
   @track draftValues = [];
   @track data;
   @track _columns;
@@ -210,14 +211,6 @@ export default class Datatable extends LightningElement {
     this._selectedRows = [];
   }
 
-  get datatableLoading() {
-    return this.datatable && this.datatable.isLoading;
-  }
-  set datatableLoading(value) {
-    if (this.datatable) {
-      this.datatable.isLoading = value;
-    }
-  }
 
   @wire(getObjectInfo, { objectApiName: "$sObject" })
   wiredObjectInfo({ error, data }) {
@@ -242,7 +235,8 @@ export default class Datatable extends LightningElement {
 
       this._columns = datatableUtils.addFieldMetadata(
         data.tableColumns,
-        this.fields
+        this.fields,
+        this.objectInfo
       );
       this._columns = datatableUtils.addRowActions(
         this._columns,
@@ -268,7 +262,7 @@ export default class Datatable extends LightningElement {
   }
 
   loadMoreData() {
-    this.datatableLoading = true;
+    this.isLoadingMore = true;
     const recordsToLoad = datatableUtils.getNumberOfRecordsToLoad(
       this._offset,
       this.recordsPerBatch,
@@ -285,7 +279,7 @@ export default class Datatable extends LightningElement {
           tableUtils.flattenQueryResult(data.tableData)
         );
         this.data = this.data.concat(data);
-        this.datatableLoading = false;
+        this.isLoadingMore = false;
         this.datatable.selectedRows = this._selectedRows;
         this._offset += data.length;
         if (this._offset >= this.maxRecords || data.length < recordsToLoad) {
@@ -451,6 +445,7 @@ export default class Datatable extends LightningElement {
   }
 
   handleSave(event) {
+    this._isLoading = true;
     let updatePromises = event.detail.draftValues.map((row) => {
       row = {...row};
       for (let key of Object.keys(row)) { // Replace fieldName with editFieldName before performing the update
@@ -462,6 +457,16 @@ export default class Datatable extends LightningElement {
       }
       // let recordForUpdate = generateRecordInputForUpdate({id: row.Id, fields:row},this.objectInfo);
       return updateRecord({ fields: row })
+        .then(() => {
+          delete this.errors.rows[row.Id];
+          if (this.datatable && this.datatable.draftValues) {
+            const draftValues = this.datatable.draftValues;
+            const draftIndex = draftValues.find(r => r.Id === row.Id);
+            draftValues.splice(draftIndex, 1);
+            this.datatable.draftValues = [...draftValues];
+          }
+          return this.refreshRow(row.Id);
+        })
         .catch((error) => {
           if (!error || !error.body || !error.body.output) {
             return;
@@ -480,10 +485,6 @@ export default class Datatable extends LightningElement {
             messages,
             fieldNames
           }
-        })
-        .then(() => {
-          delete this.errors.rows[row.Id];
-          return this.refreshRow(row.Id);
         });
     });
 
@@ -503,6 +504,7 @@ export default class Datatable extends LightningElement {
       })
       .then(()=> {
         this.errors = {...this.errors}
+        this._isLoading = false;
       });
     console.log(event);
   }

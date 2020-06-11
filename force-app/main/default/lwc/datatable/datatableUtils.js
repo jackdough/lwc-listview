@@ -1,4 +1,4 @@
-const addFieldMetadata = (columns, fieldOptions) => {
+const addFieldMetadata = (columns, fieldOptions, objectInfo) => {
     return JSON.parse(JSON.stringify(columns))
         .map(col => {
             let fieldName = col.fieldName;
@@ -16,6 +16,10 @@ const addFieldMetadata = (columns, fieldOptions) => {
                 col.typeAttributes = col.typeAttributes || {};
                 col.typeAttributes.editable = field.editable;
                 col.typeAttributes.options = field.options || col.options || [];
+            }
+            let fieldInfo = objectInfo && objectInfo.fields && objectInfo.fields[fieldName];
+            if (fieldInfo) {
+                col.sortable = fieldInfo.sortable && col.sortable; // field is not sortable if 
             }
             return col;
         })
