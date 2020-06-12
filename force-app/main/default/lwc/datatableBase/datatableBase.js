@@ -5,6 +5,7 @@ export default class DatatableBase extends LightningDatatable {
     static customTypes = {
         picklist: {
             template: picklistField,
+            standardCellLayout: false,
             typeAttributes: ['options','editable']
         }
     }

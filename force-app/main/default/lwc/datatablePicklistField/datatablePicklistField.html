@@ -1,17 +1,16 @@
 <template>
     <div class={editClass}>
         <div class="slds-grid slds-grid_align-spread">
-            <span>{displayValue}</span>
+            <span class="slds-column slds-truncate">{displayValue}</span>
             <template if:true={editable}>
                 <lightning-button-icon
-                    class="slds-m-left_x-small edit-button"
+                    class="slds-column slds-m-left_x-small edit-button"
                     icon-class="slds-icon-text-default" 
                     variant="bare"
                     icon-name="utility:edit" 
                     onclick={handleEdit}
                     >
-                </lightning-button-icon
-                >
+                </lightning-button-icon>
             </template>
         </div>
     </div>

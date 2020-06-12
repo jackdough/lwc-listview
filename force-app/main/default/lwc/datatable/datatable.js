@@ -9,6 +9,9 @@ import getTableCache from "@salesforce/apex/DataTableService.getTableCache";
 import getPushTopic from "@salesforce/apex/DataTableService.getPushTopic";
 import * as tableUtils from "c/tableServiceUtils";
 import * as datatableUtils from "./datatableUtils";
+import { loadStyle } from 'lightning/platformResourceLoader';
+import datatablePicklistUrl from '@salesforce/resourceUrl/datatablePicklist'
+
 import {
   subscribe,
   unsubscribe,
@@ -25,6 +28,14 @@ import {
 // const DELAY = 2000;
 
 export default class Datatable extends LightningElement {
+  renderedCallback() {
+    if (!this.rendered) {
+      loadStyle(this, datatablePicklistUrl);
+      this.rendered = true;
+    }
+  }
+  rendered = false;
+
   /***
    * See README.md
    ***/
