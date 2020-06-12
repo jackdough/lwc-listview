@@ -5,12 +5,15 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008Sa5LAAS) version 0.12.0
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008aqeqAAA) version 0.13.4
 
 ## Release Notes
-### 0.12.0
+### 0.13.5
 - Add the ability to show an icon in the header
+- Display errors on datatable
+- Block sorting on fields that are not sortable
 - Fix issue where newly inserted records would show duplicates if the table was refreshed immediately after creating the new record.
+- Fix issues with picklist field. (thanks to @tsalb for his help with this)
 ### 0.11.0
 - Add `editFieldName` option to datatable - allows for field fronting in edit mode
 ### 0.10.0
