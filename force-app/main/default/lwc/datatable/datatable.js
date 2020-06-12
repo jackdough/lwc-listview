@@ -216,6 +216,9 @@ export default class Datatable extends LightningElement {
   wiredObjectInfo({ error, data }) {
     if (data) {
       this.objectInfo = data;
+      if (this._columns) {
+        this._columns = datatableUtils.addObjectInfo(this._columns, this.objectInfo);
+      }
     } else if (error) {
       this.error(error.statusText + ": " + error.body.message);
     }
@@ -235,9 +238,11 @@ export default class Datatable extends LightningElement {
 
       this._columns = datatableUtils.addFieldMetadata(
         data.tableColumns,
-        this.fields,
-        this.objectInfo
+        this.fields
       );
+      if (this.objectInfo) {
+        this._columns = datatableUtils.addObjectInfo(this._columns, this.objectInfo);
+      }
       this._columns = datatableUtils.addRowActions(
         this._columns,
         this.rowActions

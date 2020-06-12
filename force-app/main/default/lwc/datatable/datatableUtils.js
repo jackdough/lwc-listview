@@ -1,4 +1,4 @@
-const addFieldMetadata = (columns, fieldOptions, objectInfo) => {
+const addFieldMetadata = (columns, fieldOptions) => {
     return JSON.parse(JSON.stringify(columns))
         .map(col => {
             let fieldName = col.fieldName;
@@ -17,14 +17,28 @@ const addFieldMetadata = (columns, fieldOptions, objectInfo) => {
                 col.typeAttributes.editable = field.editable;
                 col.typeAttributes.options = field.options || col.options || [];
             }
-            let fieldInfo = objectInfo && objectInfo.fields && objectInfo.fields[fieldName];
-            if (fieldInfo) {
-                col.sortable = fieldInfo.sortable && col.sortable; // field is not sortable if 
-            }
             return col;
         })
         .filter(col => col.visible);
 };
+
+const addObjectInfo = (columns, objectInfo) => {
+    return columns.map(col => {
+        let fieldName = col.fieldName;
+        if (!fieldName) {
+            return col;
+        }
+        if (fieldName.endsWith('Link')) { // special case for salesforce relationship fields (this will not work for custom relationships)
+            fieldName = fieldName.replace('_Link', '.Name');
+            fieldName = fieldName.replace('Link', 'Name')
+        }
+        let fieldInfo = objectInfo && objectInfo.fields && objectInfo.fields[fieldName];
+        if (fieldInfo) {
+            col.sortable = fieldInfo.sortable && col.sortable; // field is not sortable if 
+        }
+        return col;
+    });
+}
 
 const addRowActions = (columns, rowActions) => {
     if (rowActions && rowActions.length || typeof rowActions === 'function') {
@@ -99,6 +113,7 @@ const addDefaultFieldValues = (fields, editable) => {
 
 export {
     addFieldMetadata,
+    addObjectInfo,
     addRowActions,
     getNumberOfRecordsToLoad,
     createFieldArrayFromString,
