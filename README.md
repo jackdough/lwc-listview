@@ -5,7 +5,7 @@
 
 _No warranty is provided, express or implied_
 
-[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008aqeqAAA) version 0.13.4
+[Install unlocked package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008aqeqAAA) version 0.13.5
 
 ## Release Notes
 ### 0.13.5
