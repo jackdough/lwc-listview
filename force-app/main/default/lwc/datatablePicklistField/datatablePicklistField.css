@@ -6,7 +6,7 @@
 }
 
 .editable:hover {
-    background-color: white;
+    background-color: var(--lwc-colorBackgroundAlt,white);
 }
 
 .edit-button {
