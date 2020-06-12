@@ -31,6 +31,7 @@ export default class DatatablePicklistField extends LightningElement {
 
     @track editing;
     @track _options;
+    @track _value;
     _editedValue;
     valueToLabelMap={};
     editRendered;
@@ -41,6 +42,7 @@ export default class DatatablePicklistField extends LightningElement {
             this.editRendered = false; 
         } else if (!this.editRendered ) {
             combobox.focus();
+            // combobox.click();
             this.editRendered = true;
         }
     }
