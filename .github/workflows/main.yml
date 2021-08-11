@@ -1,0 +1,85 @@
+name: CI
+
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bahmutov/npm-install@v1
+    - name: Run ESLint
+      run: |
+        yarn
+        yarn lint:ci
+
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bahmutov/npm-install@v1
+    - name: Run Jest tests
+      run: |
+        yarn
+        yarn test:ci
+    - name: Upload code coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} #required
+        name: js
+
+  apex_tests:
+    runs-on: ubuntu-latest
+    # env:
+    #   scratch_username: ${{ secrets.SFDX_USERNAME }}.listview.ci
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Salesforce CLI
+      run: |
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+    - name: Populate auth file with SFDX_URL secret
+      run: echo "${{ secrets.SFDX_JWT_KEY }}" > ./server.key
+    - name: Authenticate Dev Hub with JWT
+      run: |
+        sfdx force:auth:jwt:grant \
+          --clientid ${{ secrets.SFDX_CONSUMER_KEY }} \
+          --jwtkeyfile ./server.key \
+          --username ${{ secrets.SFDX_USERNAME }} \
+          --setdefaultdevhubusername
+    - name: Create a new scratch org
+      run: |
+        sfdx force:org:create \
+          --definitionfile=config/project-scratch-def.json \
+          --setdefaultusername \
+          --setalias=scratch-org
+    - name: Push source
+      run: |
+        sfdx force:source:push \
+          --targetusername=scratch-org \
+          --forceoverwrite
+    - name: Run Apex tests
+      run: |
+        sfdx force:apex:test:run \
+          --targetusername=scratch-org \
+          --codecoverage \
+          --synchronous \
+          --resultformat=human \
+          --outputdir=coverage
+    - name: Delete scratch org
+      if: always()
+      run: |
+        sfdx force:org:delete \
+          --targetusername=scratch-org \
+          --noprompt
+    - name: Upload code coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} #required
+        name: apex

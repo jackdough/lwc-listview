@@ -32,7 +32,7 @@ public with sharing class DataTableService {
     Schema.DisplayType.MultiPicklist  => 'text',
     Schema.DisplayType.Percent        => 'percent',
     Schema.DisplayType.Phone          => 'phone',
-    Schema.DisplayType.Picklist       => 'text',
+    Schema.DisplayType.Picklist       => 'picklist',
     Schema.DisplayType.Reference      => 'url',
     Schema.DisplayType.String         => 'text',
     Schema.DisplayType.TextArea       => 'text',
@@ -188,6 +188,20 @@ public with sharing class DataTableService {
       fieldColumn.put('label', field.getLabel());
       fieldColumn.put('type', DISPLAY_TYPE_TO_DATATABLE_TYPE_MAP.get(field.getType()));
       fieldColumn.put('fieldName', flatFieldName);
+      
+      if (field.getType() == Schema.DisplayType.PICKLIST) {
+        Schema.PicklistEntry[] picklistEntries = field.getPicklistValues();
+        Object[] picklistValues = new Object[]{};
+        for (Schema.PicklistEntry pe : picklistEntries) {
+          if (pe.isActive()) {
+            Map<String,String> pv = new Map<String,String>();
+            pv.put('label',pe.getLabel());
+            pv.put('value',pe.getValue());
+            picklistValues.add(pv);
+          }
+        }
+        fieldColumn.put('options', picklistValues);
+      }
 
       // Fields with Name are typically hyperlinked
       if (
@@ -211,6 +225,35 @@ public with sharing class DataTableService {
       tableColumns.add(fieldColumn);
     }
     return tableColumns;
+  }
+
+  @AuraEnabled
+  public static String getPushTopic(String sObjectApiName) {
+      String name = 'easydt__'+sObjectApiName;
+      String query = 'SELECT Id FROM ' + sObjectApiName;
+      PushTopic pt;
+      PushTopic[] pushTopics = [SELECT Id,Name,IsActive FROM PushTopic WHERE Name=:name LIMIT 1];
+      if (pushTopics.size() > 0) {
+        pt = pushTopics[0];
+
+        if (!pt.IsActive) {
+          pt.IsActive = true;
+          update pt;
+        }
+      } else {
+        pt = new PushTopic();
+        pt.Name=name;
+        pt.ApiVersion=48;
+        pt.NotifyForOperationCreate=true;
+        pt.NotifyForOperationUpdate=true;
+        pt.NotifyForOperationDelete=true;
+        pt.NotifyForFields='All';
+        pt.Query=query;
+        
+        insert pt;
+      }
+
+      return '/topic/' + pt.Name;
   }
 
 }

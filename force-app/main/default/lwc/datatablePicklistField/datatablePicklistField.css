@@ -1,0 +1,41 @@
+:host>div {
+    display: block;
+    padding: var(--lwc-spacingXxSmall);
+    margin: 1px;
+    z-index: 8001; /* To prevent the droplist from being hidden by the save menu */
+}
+
+.editable:hover {
+    background-color: var(--lwc-colorBackgroundAlt,white);
+}
+
+.edit-button {
+    visibility: hidden;
+}
+
+:host:hover .edit-button {
+    visibility: visible;
+    opacity: .5;
+}
+
+:host:focus .editable .edit-button {
+    visibility: visible;
+    opacity: 1;
+}
+
+.editor {
+    position: absolute !important;
+    min-width: 100%;
+    width: max-content;
+    z-index: 1; 
+    top: -1px;
+    left: -1px;
+    display:block; 
+    background-color:white;
+    border: 1px solid lightgray;
+    padding: var(--lwc-spacingXxSmall);
+}
+
+lightning-combobox {
+    min-width: 100%;
+}

@@ -1,21 +1,19 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
             "c/datatable": [
                 "datatable/datatable.js"
             ],
-            "c/fieldSelection": [
-                "fieldSelection/fieldSelection.js"
+            "c/datatableBase": [
+                "datatableBase/datatableBase.js"
             ],
-            "c/listView": [
-                "listView/listView.js"
+            "c/datatablePicklistField": [
+                "datatablePicklistField/datatablePicklistField.js"
             ],
-            "c/listViewHeader": [
-                "listViewHeader/listViewHeader.js"
-            ],
-            "c/massActions": [
-                "massActions/massActions.js"
+            "c/modal": [
+                "modal/modal.js"
             ],
             "c/relatedList": [
                 "relatedList/relatedList.js"
@@ -31,12 +29,8 @@
             ],
             "c/tableServiceUtils": [
                 "../../lwc-utils/lwc/tableServiceUtils/tableServiceUtils.js"
-            ],
-            "c/modal": [
-                "modal/modal.js"
             ]
-        },
-        "experimentalDecorators": true
+        }
     },
     "include": [
         "**/*",

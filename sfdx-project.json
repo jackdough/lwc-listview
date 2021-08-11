@@ -4,19 +4,35 @@
             "path": "force-app",
             "default": true,
             "package": "lwc",
-            "versionName": "ver 0.2",
-            "versionNumber": "0.2.0.NEXT"
+            "versionNumber": "0.9.0.NEXT"
         }
     ],
-    "namespace": "",
+    "namespace": "easydt",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "47.0",
+    "sourceApiVersion": "48.0",
     "packageAliases": {
         "lwc": "0Ho6g000000blMhCAI",
         "lwc@0.1.0-1": "04t6g000003flAwAAI",
         "lwc@0.1.0-2": "04t6g000003flJHAAY",
         "lwc@0.1.0-3": "04t6g000003fpyTAAQ",
         "lwc@0.2.0-0": "04t6g000003fpyYAAQ",
-        "lwc@0.3.0-0": "04t6g000003hxs6AAA"
+        "lwc@0.3.0-0": "04t6g000003hxs6AAA",
+        "lwc@0.4.0-1": "04t6g000004Nw0mAAC",
+        "lwc@0.4.0-2": "04t6g000004O0wPAAS",
+        "lwc@0.5.0-0": "04t6g000004O0wUAAS",
+        "lwc@0.5.0-1": "04t6g000004O28tAAC",
+        "lwc@0.6.0-0": "04t6g000004OWs4AAG",
+        "lwc@0.7.0-0": "04t6g000008fW6kAAE",
+        "lwc@0.8.0-0": "04t6g000008SZyYAAW",
+        "lwc@0.9.0-0": "04t6g000008SZzRAAW",
+        "lwc@0.10.0-0": "04t6g000008SZzWAAW",
+        "lwc@0.11.0-0": "04t6g000008Sa4IAAS",
+        "lwc@0.12.0-0": "04t6g000008Sa5LAAS",
+        "lwc@0.13.0-0": "04t6g000008aqdsAAA",
+        "lwc@0.13.1-0": "04t6g000008aqe7AAA",
+        "lwc@0.13.2-0": "04t6g000008aqeCAAQ",
+        "lwc@0.13.3-0": "04t6g000008aqeHAAQ",
+        "lwc@0.13.4-0": "04t6g000008aqelAAA",
+        "lwc@0.13.5-0": "04t6g000008aqeqAAA"
     }
 }

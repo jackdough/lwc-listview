@@ -5,13 +5,18 @@ Takes as input an sObject and an array of fields and populates a datatable with 
 ### Fields: 
 
     {
-        fieldName (required),
+        fieldName (required),,
+        editFieldName (name of field to save when editing),
         label (defaults to field label),
         searchable (defaults to true on text fields),
         sortable (defaults to true),
         visible (defaults to true),
         editable (defaults to table setting),
+        options (array of options for picklist - Array of strings or objects with `label` and `value`)
     }
+
+Notes one `editFieldName`: This is designed for use with a calculated (formula) field that fronts field in Salesforce. Use carefully! It may not be obvious to users that they are editing a different field. Additionally, all the metadata comes from the original field - not the edit field! So make sure that they are the same type.
+
 
 #### Example:
     
@@ -54,6 +59,7 @@ Name | Type |Read only | Required | Description | Default value
 `enable-infinite-loading`|boolean|||automatically load more records when user reaches the end of the datatable|`false`
 `records-per-batch`|integer|||number of records to load when the end of the datable is reached|`50`
 `initial-records`|integer|||number of records to load initially|`this.recordsPerBatch`
+`enableLiveUpdates`|boolean|||update records using PushTopic|`false`
 `selected-rows`|array|✔||array of selected IDs from datatable
 `query`|string|✔||generated query string used to retrieve data
 `record-count`|integer|✔||total number of records returned by current query

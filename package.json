@@ -6,7 +6,7 @@
     "scripts": {
         "lint": "eslint force-app",
         "lint:ci": "eslint force-app --format junit --output-file eslint-junit.xml",
-        "test": "npm run lint && npm run test:unit",
+        "test": "yarn lint && yarn test:unit",
         "test:unit": "lwc-jest",
         "test:ci": "lwc-jest -- --ci",
         "test:unit:watch": "lwc-jest --watch",
@@ -17,9 +17,9 @@
     "private": true,
     "devDependencies": {
         "@salesforce/eslint-config-lwc": "^0.3.0",
-        "@salesforce/sfdx-lwc-jest": "^0.6.1",
+        "@salesforce/sfdx-lwc-jest": "^0.7.1",
         "eslint": "^6.0.1",
-        "jest": "^24.8.0",
+        "jest": "^25.1.0",
         "jest-junit": "^6.4.0"
     }
 }

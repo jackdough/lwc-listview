@@ -11,6 +11,7 @@
     <targetConfigs>
         <targetConfig targets="lightning__AppPage,lightning__HomePage">
             <property label="Title" name="title" type="String"></property>
+            <property label="Icon name" name="iconName" type="String"></property>
             <property label="Object Name" required="true" name="sObject" type="String" default="Account"></property>
             <property label="Fields" required="true" name="fields" type="String" default="Name,Phone,Website"></property>
             <property label="Sort by" required="true" name="sortedBy" type="String" default="Name"></property>
@@ -19,11 +20,12 @@
             <property label="Inline edit"  name="editable" type="Boolean"></property>
             <!-- <property label="Allow editing"  name="modalEdit" type="Boolean"></property> -->
             <property label="Show new record button"  name="showAddButton" type="Boolean"></property>
-            <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean"></property>
+            <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean" default="true"></property>
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
+            <property label="Live updates" name="enableLiveUpdates" description="Note: Streaming update support utilizes the PushTopic feature, which has a maximum of 50 PushTopic records per org. The datatable uses one for each object type that has live updates enabled. They can be deleted or deactivated if necessary - use `SELECT Id, IsActive FROM PushTopic WHERE Name LIKE 'easydt__%` to retrieve them via SOQL." type="Boolean" default="true"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
-            <property label="Initial records" description="Number of records to load initially" name="initialRecords" type="Integer"></property>
-            <property label="Height" name="height" type="Integer"></property>
+            <property label="Initial records" description="Number of records to load in the first batch" name="initialRecords" type="Integer"></property>
+            <property label="Height" name="height" description="Set a fixed height (in pixels) for the table. If infinite loading is enabled, this is necessary to prevent the table from loading endlessly." type="Integer" default="300"></property>
             <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
             <supportedFormFactors>
                 <supportedFormFactor type="Large"></supportedFormFactor>
@@ -31,6 +33,7 @@
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
             <property label="Title" name="title" type="String"></property>
+            <property label="Icon name" name="iconName" type="String"></property>
             <property label="Object Name" required="true" name="sObject" type="String" default="Account"></property>
             <property label="Fields" required="true" name="fields" type="String" default="Name,Phone,Website"></property>
             <property label="Sort by" required="true" name="sortedBy" type="String" default="Name"></property>
@@ -43,9 +46,10 @@
             <property label="Show new record button"  name="showAddButton" type="Boolean"></property>
             <property label="Hide checkbox column"  name="hideCheckboxColumn" type="Boolean"></property>
             <property label="Enable infinite loading" description="Automatically load more records when the end of the list is reached" name="enableInfiniteLoading" type="Boolean"></property>
+            <property label="Live updates" name="enableLiveUpdates" description="Note: Streaming update support utilizes the PushTopic feature, which has a maximum of 50 PushTopic records per org. The datatable uses one for each object type that has live updates enabled. They can be deleted or deactivated if necessary - use `SELECT Id, IsActive FROM PushTopic WHERE Name LIKE 'easydt__%` to retrieve them via SOQL." type="Boolean" default="true"></property>
             <property label="Records per batch" description="Number of records to load at a time" name="recordsPerBatch" type="Integer"></property>
             <property label="Initial records" description="Number of records to load initially" name="initialRecords" type="Integer"></property>
-            <property label="Height" name="height" type="Integer"></property>
+            <property label="Height" name="height" description="Set a fixed height (in pixels) for the table. If infinite loading is enabled, this is necessary to prevent the table from loading endlessly." type="Integer" default="300"></property>
             <property label="Show SOQL query (for debugging)" type="Boolean" name="showSoql"></property>
             <supportedFormFactors>
                 <supportedFormFactor type="Large"></supportedFormFactor>

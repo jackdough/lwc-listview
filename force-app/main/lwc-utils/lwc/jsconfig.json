@@ -5,17 +5,14 @@
             "c/datatable": [
                 "../../default/lwc/datatable/datatable.js"
             ],
-            "c/fieldSelection": [
-                "../../default/lwc/fieldSelection/fieldSelection.js"
+            "c/datatableBase": [
+                "../../default/lwc/datatableBase/datatableBase.js"
             ],
-            "c/listView": [
-                "../../default/lwc/listView/listView.js"
+            "c/datatablePicklistField": [
+                "../../default/lwc/datatablePicklistField/datatablePicklistField.js"
             ],
-            "c/listViewHeader": [
-                "../../default/lwc/listViewHeader/listViewHeader.js"
-            ],
-            "c/massActions": [
-                "../../default/lwc/massActions/massActions.js"
+            "c/modal": [
+                "../../default/lwc/modal/modal.js"
             ],
             "c/relatedList": [
                 "../../default/lwc/relatedList/relatedList.js"
@@ -31,9 +28,6 @@
             ],
             "c/tableServiceUtils": [
                 "tableServiceUtils/tableServiceUtils.js"
-            ],
-            "c/modal": [
-                "../../default/lwc/modal/modal.js"
             ]
         },
         "experimentalDecorators": true
